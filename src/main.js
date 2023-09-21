@@ -1,12 +1,18 @@
 import Phaser from "phaser";
 
-import HelloWorldScene from "./scenes/HelloWorldScene";
+import Preload from "./scenes/Preload";
+import Lobby from "./scenes/Lobby";
 import UI from "./scenes/UI";
+import Game from "./scenes/Game";
+import PrincipalMenu from "./scenes/PrincipalMenu";
+import Settings from "./scenes/Settings";
+import Tutorial from "./scenes/Tutorial";
+
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
+  width: 1920,
+  height: 1080,
   scale: {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -22,11 +28,10 @@ const config = {
   physics: {
     default: "arcade",
     arcade: {
-      gravity: { y: 200 },
       debug: false,
     },
   },
-  scene: [HelloWorldScene, UI],
+  scene: [Preload, Lobby, PrincipalMenu, Game, UI, Settings, Tutorial],
 };
 
 export default new Phaser.Game(config);
