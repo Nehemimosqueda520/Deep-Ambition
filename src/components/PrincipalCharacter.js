@@ -4,7 +4,10 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
     
     velocity;
 
-    constructor(scene, x, y, texture, velocity) {
+    // stamina;
+
+
+    constructor(scene, x, y, texture, velocity /*   stamina  */) {
         super(scene, x, y, texture);
 
         this.setTexture("principal-character");
@@ -12,58 +15,30 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
-        this.setScale(0.5);
         this.setCollideWorldBounds(true);
         
 
         this.velocity = velocity;
         this.cursor = scene.input.keyboard.createCursorKeys();
 
-        //  animacion maqueta comentada
-        // this.anims.create({
-        //     key: 'left',
-        //     frames: this.anims.generateFrameNumbers('maqueta', { start: 0, end: 3 }
-        //     frameRate: 10, repeat: -1
-        // });
-
-        // this.anims.create({
-        //     key: 'right',
-        //     frames: this.anims.generateFrameNumbers('maqueta', { start: 0, end: 3 }
-        //     frameRate: 10, repeat: -1
-
-        // });
-
-        // this.anims.create({
-        //     key: 'up',
-        //     frames: this.anims.generateFrameNumbers('maqueta', { start: 0, end: 3 }
-        //     frameRate: 10, repeat: -1
-        // });
-
-        // this.anims.create({
-        //     key: 'down',
-        //     frames: this.anims.generateFrameNumbers('maqueta', { start: 0, end: 3 }
-        //     frameRate: 10, repeat: -1
-        // });
-
+        // this.stamina = stamina;
 }
+
 
 update() {
 
     //  movimiento
     if (this.cursor.left.isDown) {
         this.setVelocityX(-this.velocity);
-        // this.anims.play('left', true);
-    }
-
-    if (this.cursor.right.isDown) {
+        // this.anims.play('left', true);     
+    } else if (this.cursor.right.isDown) {
         this.setVelocityX(this.velocity);
         // this.anims.play('right', true);
-    }
-    if (this.cursor.up.isDown) {
+    } else if (this.cursor.up.isDown) {
         this.setVelocityY(-this.velocity);
         // this.anims.play('up', true);
     }
-    if (this.cursor.down.isDown) {
+    else if (this.cursor.down.isDown) {
         this.setVelocityY(this.velocity);
         // this.anims.play('down', true);
     }else {
@@ -72,6 +47,19 @@ update() {
         // this.anims.stop();
     }
 
+    // if (this.cursor.space.isDown) {
+    //     this.activateStamina();
+    // }
 }
 
+// activateStamina () {
+//     if (this.stamina >= 10) {
+//         this.velocity *= 1.5;
+//         this.stamina -= 10;
+// }
+
+
+
 }
+
+

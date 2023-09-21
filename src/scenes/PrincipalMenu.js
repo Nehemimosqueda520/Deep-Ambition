@@ -35,7 +35,7 @@ export default class PrincipalMenu extends Phaser.Scene {
     });
 
     this.playText.on('pointerdown', () => {
-      this.scene.start("lobby"); // Cambia a la escena "lobby" cuando se hace clic
+      this.scene.start("game"); // Cambia a la escena "lobby" cuando se hace clic
     });
 
 // texto de configuración
