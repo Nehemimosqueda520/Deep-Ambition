@@ -7,6 +7,7 @@ import Game from "./scenes/Game";
 import PrincipalMenu from "./scenes/PrincipalMenu";
 import Settings from "./scenes/Settings";
 import Tutorial from "./scenes/Tutorial";
+import Pause from "./scenes/pause";
 
 
 const config = {
@@ -31,7 +32,7 @@ const config = {
       debug: false,
     },
   },
-  scene: [Preload, Lobby, PrincipalMenu, Game, UI, Settings, Tutorial],
+  scene: [Preload, Lobby, PrincipalMenu, Game, UI, Settings, Tutorial, Pause],
 };
 
 export default new Phaser.Game(config);

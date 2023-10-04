@@ -9,6 +9,10 @@ export default class UI extends Phaser.Scene {
 
   level;
 
+  stamina;
+
+  dynamiteCuantity;
+
   constructor() {
     super("ui");
   }
@@ -18,6 +22,7 @@ export default class UI extends Phaser.Scene {
     this.score = data.score || 0;
     this.level = data.level || 1;
     this.stamina = data.stamina || 100;
+    this.dynamiteCuantity = data.dynamiteCuantity || 0;
   }
 
 
@@ -25,9 +30,9 @@ export default class UI extends Phaser.Scene {
     this.levelText = this.add.text(
       10,
       10,
-      `Nivel: ${this.level} - Puntos ${this.score}`,
+      `Nivel: ${this.level} - Puntos ${this.score} - dinamita ${this.dynamiteCuantity}`,
       {
-        font: "12px Arial",
+        font: "30px Arial",
         color: "#ffffff",
       }
     );
@@ -37,7 +42,8 @@ export default class UI extends Phaser.Scene {
 updates (data) {
   this.level = data.level;
   this.score = data.score;
+  this.dynamiteCuantity = data.dynamiteCuantity;
 
-  this.levelText.setText(`Nivel: ${this.level} - Puntos ${this.score}`);
+  this.levelText.setText(`Nivel: ${this.level} - Puntos ${this.score} - dinamita ${this.dynamiteCuantity}`);
 }
 }

@@ -1,16 +1,36 @@
-import Phaser from "phaser";
+import Phaser from "phaser"
+
+import events from "./EventCenter";
 
 export default class PrincipalMenu extends Phaser.Scene {
 
   playText;
 
+  settingsText;
+
+  tutorialText;
+
+  mainMenuSong;
+
+
+  volume;
+
   constructor() {
     super("principal-menu");
+  }
+
+  init (data) {
+    this.volume = data.volume || 1;
+    this.visibleVolume = data.visibleVolume || 100;
   }
 
   create() {
     // Fondo negro
     this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000).setOrigin(0);
+
+    this.mainMenuSong = this.sound.add("main-menu-song");
+    this.mainMenuSong.play();
+    this.mainMenuSong.loop = true;
 
     // Texto de bienvenida
     this.add.text(100, 100, "Deep Ambition", {
@@ -35,7 +55,9 @@ export default class PrincipalMenu extends Phaser.Scene {
     });
 
     this.playText.on('pointerdown', () => {
-      this.scene.start("game"); // Cambia a la escena "lobby" cuando se hace clic
+      this.scene.start("lobby");
+      this.mainMenuSong.stop();
+      this.mainMenuSong.loop = false; // Cambia a la escena "lobby" cuando se hace clic
     });
 
 // texto de configuración
@@ -53,7 +75,12 @@ export default class PrincipalMenu extends Phaser.Scene {
   })
 
   this.settingsText.on('pointerdown', () => {
-    this.scene.launch("settings");
+    this.scene.launch("settings", {
+      mainMenuSong: this.mainMenuSong, // Pasa la música a la escena de configuración
+      volume: this.volume,
+      visibleVolume: this.visibleVolume,
+  });
+  this.scene.pause();
   })
 
 
@@ -72,9 +99,16 @@ export default class PrincipalMenu extends Phaser.Scene {
     })
 
     this.tutorialText.on('pointerdown', () => {
-      this.scene.launch("tutorial");
-    })
+      this.scene.launch ("tutorial");
+      this.scene.pause();
+    });
 
+    
+    events.on("music-settings", this.musicTransfer, this);
 
+  }
+
+  musicTransfer (data) {
+    this.mainMenuSong = data.mainMenuSong;
   }
 }
