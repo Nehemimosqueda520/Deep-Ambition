@@ -22,7 +22,7 @@ export default class UI extends Phaser.Scene {
     this.score = data.score || 0;
     this.level = data.level || 1;
     this.stamina = data.stamina || 100;
-    this.dynamiteCuantity = data.dynamiteCuantity || 0;
+    this.dynamiteCuantity = data.dynamiteCuantity || 22;
   }
 
 
