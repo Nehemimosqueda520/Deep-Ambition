@@ -35,7 +35,7 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
         this.canUseFlash = true;
 
 
-        const hitboxHeight = this.height / 2; // La mitad de la altura del personaje
+        const hitboxHeight = this.height * 0.4; // La mitad de la altura del personaje
         this.body.setSize(this.width, hitboxHeight);
         this.body.setOffset(0, this.height - hitboxHeight);
         // this.stamina = stamina;
@@ -48,24 +48,30 @@ update() {
 if (this.cursor.left.isDown && !this.cursor.right.isDown) {
     this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, -this.velocity, 0.2));
     this.darkness.setPosition(this.x, this.y);
+    this.play('character-idle', false);
 } else if (this.cursor.right.isDown && !this.cursor.left.isDown) {
     this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, this.velocity, 0.2));
     this.darkness.setPosition(this.x, this.y);
+    this.play('character-idle', false);
 } else {
     this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, 0, 0.2));
     this.darkness.setPosition(this.x, this.y);
+    
 }
 
 // Control de movimiento vertical
 if (this.cursor.up.isDown && !this.cursor.down.isDown) {
     this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, -this.velocity, 0.2));
     this.darkness.setPosition(this.x, this.y);
+    this.play('character-idle', false);
 } else if (this.cursor.down.isDown && !this.cursor.up.isDown) {
     this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, this.velocity, 0.2));
     this.darkness.setPosition(this.x, this.y);
+    this.play ('character-down', true);
 } else {
     this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, 0, 0.2));
     this.darkness.setPosition(this.x, this.y);
+    this.play('character-idle', true);
 }
 
 

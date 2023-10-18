@@ -42,7 +42,7 @@ export default class Game extends Phaser.Scene {
   init(data) {
     this.velocity = data.velocity || 400;
     this.level = data.level || 1;
-    this.dynamiteCuantity = data.dynamiteCuantity || 0;
+    this.dynamiteCuantity = data.dynamiteCuantity || 22;
     this.score = data.score || 0;
   }
 
@@ -116,7 +116,7 @@ export default class Game extends Phaser.Scene {
       });
     }
 
-    if (this.dynamiteCuantity >= 22) {
+    if (this.dynamiteCuantity <= 0) {
         this.scene.start ("lobby", {
           level: this.level,
         });
@@ -128,7 +128,7 @@ export default class Game extends Phaser.Scene {
 
   hitDynamite(character, dynamite) {
     dynamite.disableBody(true, true);
-    this.dynamiteCuantity += 1;
+    this.dynamiteCuantity -= 1;
     events.emit("actualizarDatos", {
       level: this.level,
       dynamiteCuantity: this.dynamiteCuantity,

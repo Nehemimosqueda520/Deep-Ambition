@@ -10,7 +10,10 @@ export default class Preload extends Phaser.Scene {
   }
 
 preload() {
-  this.load.image("principal-character", "./assets/sprites/principal-character.png");
+  this.load.spritesheet("principal-character", "./assets/sprites/test.png", {
+    frameWidth: 98,
+    frameHeight: 214,
+  });
   this.load.image ("dynamite" , "./assets/sprites/dynamite.png");
   this.load.image ("enemy", "./assets/sprites/enemy.png");
   this.load.image ("flash-effect", "./assets/particles/flashEffect.webp");
@@ -60,11 +63,11 @@ create () {
   
   
   //  animacion maqueta comentada
-        // this.anims.create({
-        //     key: 'left',
-        //     frames: this.anims.generateFrameNumbers('maqueta', { start: 0, end: 3 }
-        //     frameRate: 10, repeat: -1
-        // });
+        this.anims.create({
+            key: 'character-idle',
+            frames: this.anims.generateFrameNumbers('principal-character', { start: 0, end: 2 }),
+            frameRate: 3, repeat: -1
+        });
 
         // this.anims.create({
         //     key: 'right',
@@ -79,11 +82,11 @@ create () {
         //     frameRate: 10, repeat: -1
         // });
 
-        // this.anims.create({
-        //     key: 'down',
-        //     frames: this.anims.generateFrameNumbers('maqueta', { start: 0, end: 3 }
-        //     frameRate: 10, repeat: -1
-        // })
+        this.anims.create({
+            key: 'character-down',
+            frames: this.anims.generateFrameNumbers('principal-character', { start: 3, end: 10 }),
+            frameRate: 10, repeat: -1
+         })
 
 
 
