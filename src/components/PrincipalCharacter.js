@@ -80,6 +80,8 @@ if (this.cursor.up.isDown && !this.cursor.down.isDown) {
             // Mostrar el destello y configurar su posición
             this.flashEffect.setVisible(true);
             this.flashEffect.setPosition(this.x, this.y);
+
+            this.scene.events.emit('flashActivated', { x: this.x, y: this.y });
     
             // Deshabilitar el uso del destello durante 20 segundos
             this.canUseFlash = false;

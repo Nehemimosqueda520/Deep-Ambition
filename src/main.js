@@ -8,6 +8,8 @@ import PrincipalMenu from "./scenes/PrincipalMenu";
 import Settings from "./scenes/Settings";
 import Tutorial from "./scenes/Tutorial";
 import Pause from "./scenes/pause";
+import Win from "./scenes/win";
+import Lose from "./scenes/lose";
 
 
 const config = {
@@ -32,7 +34,7 @@ const config = {
       debug: false,
     },
   },
-  scene: [Preload, Lobby, PrincipalMenu, Game, UI, Settings, Tutorial, Pause],
+  scene: [ Preload, Lobby, PrincipalMenu, Game, UI, Settings, Tutorial, Pause, Win, Lose],
 };
 
 export default new Phaser.Game(config);

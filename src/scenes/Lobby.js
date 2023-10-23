@@ -16,7 +16,7 @@ export default class Lobby extends Phaser.Scene {
 init(data) {
   this.velocity = data.velocity || 400;
   this.level = data.level || 0;
-  this.score = data.score || 0;
+  this.health = data.health|| 3;
   this.dynamiteCuantity = 0;
 }
 
@@ -41,7 +41,7 @@ create () {
 update() {
   events.emit("actualizarDatos", {
     level: this.level,
-    score: this.score,
+    health: this.health,
     dynamiteCuantity: this.dynamiteCuantity
   });
   this.character.update();
@@ -53,7 +53,7 @@ update() {
     this.scene.start("game", {
       velocity: this.velocity,
       level: this.level,
-      score: this.score,
+      health: this.health,
       dynamiteCuantity: this.dynamiteCuantity
     });
   }
@@ -65,7 +65,7 @@ update() {
     this.scene.start("game", {
       velocity: this.velocity,
       level: this.level,
-      score: this.score,
+      health: this.health,
       dynamiteCuantity: this.dynamiteCuantity
     });
   }
@@ -78,7 +78,7 @@ update() {
       this.scene.start("game", {
         velocity: this.velocity,
         level: this.level,
-        score: this.score,
+        health: this.health,
         dynamiteCuantity: this.dynamiteCuantity
       });
     }
