@@ -5,35 +5,6 @@ import DynamiteGroup from "../components/Dynamite";
 import Enemy from "../components/Enemys";
 
 export default class Game extends Phaser.Scene {
-  character;
-
-  dynamite;
-
-  velocity;
-
-  dynamiteCuantity;
-
-  level1Tile;
-  
-  gameSong;
-
-  keyP;
-
-  spawnPoint;
-
-  atlas;
-
-  floorLayer;
-
-  wallCollisionLayer;
-
-  wallDecorativeLayer;
-
-  objectsLayer;
-
-  level;
-
-  score;
 
   constructor() {
     super("game");
@@ -43,7 +14,7 @@ export default class Game extends Phaser.Scene {
     this.velocity = data.velocity || 400;
     this.level = data.level || 1;
     this.dynamiteCuantity = data.dynamiteCuantity || 22;
-    this.score = data.score || 0;
+    this.health = data.health || 3;
   }
 
   create() {
@@ -61,9 +32,13 @@ export default class Game extends Phaser.Scene {
    
     this.createCharacter();
     this.createDynamite();
-    this.physics.add.collider(this.character, this.wallCollisionLayer);
     this.createEnemy();
+    this.physics.add.collider(this.character, this.wallCollisionLayer);
+    this.physics.add.collider(this.enemyGroup, this.wallCollisionLayer);
+    
     this.physics.add.overlap(this.character, this.dynamite, this.hitDynamite, null, this);
+    this.physics.add.overlap(this.enemyGroup, this.character, this.damage, null, this);
+
 
     events.on("music", this.musicTransfer, this);
 
@@ -104,11 +79,28 @@ export default class Game extends Phaser.Scene {
   }
 
   createEnemy() {
-    this.enemy = new Enemy(this);
-  }
+    this.enemyGroup = this.physics.add.group();
+
+    this.objectsLayer.objects.forEach((objData) => {
+        const { x = 0, y = 0, name } = objData;
+        if (name === "enemy") {
+          const enemy = new Enemy(this, x, y, "enemy", this.character, 300, 1000); // Ajusta la velocidad según tus necesidades
+            this.enemyGroup.add(enemy);
+        }
+    });
+}
+
 
   update() {
+
     this.character.update();
+    
+    this.enemyGroup.getChildren().forEach((enemy) => {
+        if (enemy instanceof Enemy) {
+            enemy.update();
+        }
+    });
+
     if (this.keyP.isDown) {
       this.scene.pause();
       this.scene.launch("pause", {
@@ -117,7 +109,7 @@ export default class Game extends Phaser.Scene {
     }
 
     if (this.dynamiteCuantity <= 0) {
-        this.scene.start ("lobby", {
+        this.scene.start ("win", {
           level: this.level,
         });
         this.gameSong.stop();
@@ -132,9 +124,26 @@ export default class Game extends Phaser.Scene {
     events.emit("actualizarDatos", {
       level: this.level,
       dynamiteCuantity: this.dynamiteCuantity,
-      score: this.score,
+      health: this.health,
     });
   }
+
+  damage () {
+    this.level = this.level - 1;
+    console.log(this.level);
+    this.scene.start ("lose", {
+      level: this.level,
+      health: this.health,
+    })
+    this.gameSong.stop();
+    this.gameSong.loop = false;
+    events.emit("actualizarDatos", {
+      level: this.level,
+      dynamiteCuantity: this.dynamiteCuantity,
+      health: this.health,
+    });
+      
+    }
 
   musicTransfer(data) {
     this.gameSong = data.gameSong;
