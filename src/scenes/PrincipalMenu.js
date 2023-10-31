@@ -29,21 +29,29 @@ export default class PrincipalMenu extends Phaser.Scene {
   }
 
   create() {
-    this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000).setOrigin(0);
+    this.BackgroundVideo =this.add.video(1920/2, 1080/2, "main-menu-background");
+    this.BackgroundVideo.play(true);
+    this.BackgroundVideo.setLoop(true);
+    this.BackgroundVideo.setScale(1.05);
 
     this.fadingOverlay = this.add.rectangle(0, 0, this.cameras.main.width, this.cameras.main.height, 0x000000).setOrigin(0);
     this.fadingOverlay.setAlpha(0);
 
-    this.sounds();
+    this.sounds()
 
-    this.add.text(100, 100, "Deep Ambition", {
-      fontSize: '32px',
-      color: '#fff'
+    this.color = '#680005';
+    this.fontFamily = '"Press Start 2P"';
+
+    this.add.text(80, 60, "Deep Ambition", {
+      fontFamily: this.fontFamily,
+      fontSize: '160px',
+      color: '#7D080E'
     });
 
-    this.playText = this.add.text(100, 200, getPhrase("Jugar"), {
-      fontSize: '20px',
-      color: '#fff'
+    this.playText = this.add.text(80, 350, getPhrase("Jugar"), {
+      fontFamily: this.fontFamily,
+      fontSize: '140px',
+      color: this.color
     }).setInteractive();
 
   
@@ -55,7 +63,6 @@ export default class PrincipalMenu extends Phaser.Scene {
 
     this.playText.on('pointerout', () => {
       this.playText.setScale(1); 
-      this.pointerSound.play();
     });
 
     this.playText.on('pointerdown', () => {
@@ -74,9 +81,10 @@ export default class PrincipalMenu extends Phaser.Scene {
     });
 
 
-    this.settingsText = this.add.text(100, 250, getPhrase("Configuración"), {
-      fontSize: '20px',
-      color: '#fff'
+    this.settingsText = this.add.text(80, 580, getPhrase("Configuración"), {
+      fontFamily: this.fontFamily,
+      fontSize: '80px',
+      color: this.color
     }).setInteractive();
 
   this.settingsText.on('pointerover', () => {
@@ -86,7 +94,6 @@ export default class PrincipalMenu extends Phaser.Scene {
   
   this.settingsText.on('pointerout', () => {
     this.settingsText.setScale(1);
-    this.pointerSound.play();
   })
 
   this.settingsText.on('pointerdown', () => {
@@ -99,9 +106,10 @@ export default class PrincipalMenu extends Phaser.Scene {
   })
 
 
-    this.tutorialText = this.add.text(100, 300, getPhrase("¿Cómo jugar?"), {
-      fontSize: '20px',
-      color: '#fff'
+    this.tutorialText = this.add.text(80, 790, getPhrase("¿Cómo jugar?"), {
+      fontFamily: this.fontFamily,
+      fontSize: '80px',
+      color: this.color
     }).setInteractive();
 
     //  hacer lo mismo que con settings
@@ -112,7 +120,6 @@ export default class PrincipalMenu extends Phaser.Scene {
 
     this.tutorialText.on('pointerout', () => {
       this.tutorialText.setScale(1);
-      this.pointerSound.play();
     })
 
     this.tutorialText.on('pointerdown', () => {
