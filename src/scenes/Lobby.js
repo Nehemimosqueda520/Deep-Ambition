@@ -13,7 +13,7 @@ export default class Lobby extends Phaser.Scene {
 
   init(data) {
     this.velocity = data.velocity || 400;
-    this.level = data.level || 1;
+    this.level = data.level || 0;
     this.health = data.health || 3;
     this.dynamiteCuantity = 0;
   }
@@ -85,6 +85,7 @@ export default class Lobby extends Phaser.Scene {
   }
 
   goToLevel1() {
+    this.level = 1;
     this.dynamiteCuantity = 22;
     this.scene.start("game", {
       velocity: this.velocity,
@@ -98,6 +99,7 @@ export default class Lobby extends Phaser.Scene {
 
   goTolevel2() {
     if (this.level >= 1) {
+      this.level = 2;
       this.dynamiteCuantity = 22;
       this.scene.start("game", {
         velocity: this.velocity,
@@ -112,6 +114,7 @@ export default class Lobby extends Phaser.Scene {
 
   goToLevel3() {
     if (this.level >= 2) {
+      this.level = 3;
       this.dynamiteCuantity = 22;
       this.scene.start("game", {
         velocity: this.velocity,

@@ -1,19 +1,21 @@
 import Phaser from "phaser";
 
 export default class Enemy extends Phaser.Physics.Arcade.Sprite {
-    constructor(scene, x, y, texture, player, speed, followDistance) {
+    constructor(scene, x, y, texture, player, followDistance, level) {
         super(scene, x, y, texture);
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
         this.player = player;
-        this.speed = speed;
+        this.speed = 300 + (level - 1) * 100;
         this.followDistance = followDistance;
         this.randomMoveDuration = 2000;
         this.randomMoveTimer = 0;
         this.isMovingRandomly = false;
         this.isFlashed = false;
         this.flashRange = 980;
+
+        
 
         // Nueva variable y temporizador para el aturdimiento
         this.stunDuration = 2000; // Duración del aturdimiento en milisegundos

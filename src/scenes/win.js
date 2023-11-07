@@ -46,6 +46,6 @@ export default class Win extends Phaser.Scene {
             });
         });
 
-        this.level += 1;
+    
     }
 }

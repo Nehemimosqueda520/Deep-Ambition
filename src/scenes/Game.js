@@ -7,6 +7,7 @@ import Enemy from "../components/Enemys";
 export default class Game extends Phaser.Scene {
   constructor() {
     super("game");
+    this.timeElapsed = 0;
   }
 
   init(data) {
@@ -17,13 +18,7 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
-    const user = this.firebase.getUser();
-    this.firebase.saveGameData(user.uid, {
-      level: this.level,
-      health: this.health,
-      day: new Date(),
-    });
-
+    this.user = this.firebase.getUser();
     this.scene.launch("ui", {
       level: this.level,
     });
@@ -131,14 +126,14 @@ export default class Game extends Phaser.Scene {
     this.objectsLayer.objects.forEach((objData) => {
       const { x = 0, y = 0, name } = objData;
       if (name === "enemy") {
-        const enemy = new Enemy(this, x, y, "enemy", this.character, 300, 1000); // Ajusta la velocidad según tus necesidades
+        const enemy = new Enemy(this, x, y, "enemy", this.character, 1000, this.level); // Ajusta la velocidad según tus necesidades
         this.enemyGroup.add(enemy);
       }
     });
     this.enemyGroup.setDepth(2);
   }
 
-  update() {
+  update(time, delta) {
     this.character.update();
 
     this.enemyGroup.getChildren().forEach((enemy) => {
@@ -160,7 +155,17 @@ export default class Game extends Phaser.Scene {
       });
       this.gameSong.stop();
       this.gameSong.loop = false;
+      this.saveGameData();
     }
+
+    this.timeElapsed += delta;
+
+    events.emit("actualizarDatos", {
+      level: this.level,
+      dynamiteCuantity: this.dynamiteCuantity,
+      health: this.health,
+      timeElapsed: this.timeElapsed,
+    });
   }
 
   hitDynamite(character, dynamite) {
@@ -181,11 +186,24 @@ export default class Game extends Phaser.Scene {
     });
     this.gameSong.stop();
     this.gameSong.loop = false;
+
+    
+
     events.emit("actualizarDatos", {
       level: this.level,
       dynamiteCuantity: this.dynamiteCuantity,
       health: this.health,
     });
+  }
+
+  saveGameData() {
+    this.firebase.saveGameData(this.user.uid, {
+      level: this.level,
+      health: this.health,
+      day: new Date(),
+      timeElapsed: this.timeElapsed,
+    });
+
   }
 
   musicTransfer(data) {
