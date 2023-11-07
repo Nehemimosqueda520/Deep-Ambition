@@ -12,7 +12,7 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
 
     canUseFlash;
 
-    constructor(scene, x, y, texture, velocity /*   stamina  */) {
+    constructor(scene, x, y, texture, velocity ) {
         super(scene, x, y, texture);
 
         this.setTexture("principal-character");
@@ -35,45 +35,46 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
         this.canUseFlash = true;
 
 
-        const hitboxHeight = this.height * 0.4; // La mitad de la altura del personaje
-        this.body.setSize(this.width, hitboxHeight);
-        this.body.setOffset(0, this.height - hitboxHeight);
-        // this.stamina = stamina;
+        this.hitboxHeight = this.height * 0.4;
+        this.hitboxWidth = this.width * 0.6;
+        this.offsetX = (this.width - this.hitboxWidth) / 2;
+        this.offsetY = this.height - this.hitboxHeight;
+        this.body.setSize(this.hitboxWidth, this.hitboxHeight);
+        this.body.setOffset(this.offsetX, this.offsetY);
 }
 
 
 update() {
+    // Control de movimiento horizontal
+    if (this.cursor.left.isDown && !this.cursor.right.isDown) {
+        this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, -this.velocity, 0.2));
+        this.darkness.setPosition(this.x, this.y);
+        this.play('character-left', true);
+    } else if (this.cursor.right.isDown && !this.cursor.left.isDown) {
+        this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, this.velocity, 0.2));
+        this.darkness.setPosition(this.x, this.y);
+        this.play('character-right', true);
+    } else {
+        this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, 0, 0.2));
+    }
 
-// Control de movimiento horizontal
-if (this.cursor.left.isDown && !this.cursor.right.isDown) {
-    this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, -this.velocity, 0.2));
-    this.darkness.setPosition(this.x, this.y);
-    this.play('character-idle', false);
-} else if (this.cursor.right.isDown && !this.cursor.left.isDown) {
-    this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, this.velocity, 0.2));
-    this.darkness.setPosition(this.x, this.y);
-    this.play('character-idle', false);
-} else {
-    this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, 0, 0.2));
-    this.darkness.setPosition(this.x, this.y);
-    
-}
+    // Control de movimiento vertical
+    if (this.cursor.up.isDown && !this.cursor.down.isDown) {
+        this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, -this.velocity, 0.2));
+        this.darkness.setPosition(this.x, this.y);
+        this.play('character-up', true);
+    } else if (this.cursor.down.isDown && !this.cursor.up.isDown) {
+        this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, this.velocity, 0.2));
+        this.darkness.setPosition(this.x, this.y);
+        this.play('character-down', true);
+    } else {
+        this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, 0, 0.2));
+    }
 
-// Control de movimiento vertical
-if (this.cursor.up.isDown && !this.cursor.down.isDown) {
-    this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, -this.velocity, 0.2));
-    this.darkness.setPosition(this.x, this.y);
-    this.play('character-idle', false);
-} else if (this.cursor.down.isDown && !this.cursor.up.isDown) {
-    this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, this.velocity, 0.2));
-    this.darkness.setPosition(this.x, this.y);
-    this.play ('character-down', true);
-} else {
-    this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, 0, 0.2));
-    this.darkness.setPosition(this.x, this.y);
-    this.play('character-idle', true);
-}
-
+    // Si ninguna tecla de dirección está presionada, reproducir la animación "character-idle"
+    if (!this.cursor.left.isDown && !this.cursor.right.isDown && !this.cursor.up.isDown && !this.cursor.down.isDown) {
+        this.play('character-idle', true);
+    }
 
 
         if (this.cursor.space.isDown && this.canUseFlash) {
@@ -97,7 +98,3 @@ if (this.cursor.up.isDown && !this.cursor.down.isDown) {
         }
     }
 }    
-
-
-
-
