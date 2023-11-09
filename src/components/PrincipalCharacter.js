@@ -6,13 +6,11 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
 
     flashEffect;
 
-    // stamina;
-
     cursor;
 
     canUseFlash;
 
-    constructor(scene, x, y, texture, velocity ) {
+    constructor(scene, x, y, texture, velocity, canUseFlash ) {
         super(scene, x, y, texture);
 
         this.setTexture("principal-character");
@@ -22,6 +20,9 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
 
         this.setCollideWorldBounds(true);
         
+        this.isBoosting = false;
+        this.boostDuration = 10000; // Duración del impulso en milisegundos (10 segundos)
+        this.boostCooldown = 10000; 
 
         this.velocity = velocity;
         this.cursor = scene.input.keyboard.createCursorKeys();
@@ -32,7 +33,7 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
 
         this.darkness = scene.add.image(x, y, "darkness").setDepth(1);
 
-        this.canUseFlash = true;
+        this.canUseFlash = canUseFlash || true;
 
 
         this.hitboxHeight = this.height * 0.4;
@@ -96,5 +97,31 @@ update() {
                 this.flashEffect.setVisible(false);
             });
         }
+
+        if (this.cursor.space.isDown) {
+            this.applyBoost(); // Llama a la función de impulso al presionar la tecla espaciadora
+        }   
     }
+
+    applyBoost() {
+        if (this.canUseFlash && !this.isBoosting) {
+          // Activa el impulso
+          this.isBoosting = true;
+          this.canUseFlash = false;
+      
+          // Establece la velocidad durante el impulso
+          this.setVelocityX(this.velocity * 2); // Aumenta la velocidad (ajusta según tus necesidades)
+      
+          // Configura un temporizador para desactivar el impulso después de la duración especificada
+          this.scene.time.delayedCall(this.boostDuration, () => {
+            this.isBoosting = false;
+            this.setVelocityX(this.velocity); // Restablece la velocidad normal
+          });
+      
+          // Configura un temporizador para habilitar el uso del impulso nuevamente después del tiempo de espera
+          this.scene.time.delayedCall(this.boostCooldown, () => {
+            this.canUseFlash = true; // Habilita nuevamente el uso del impulso
+          });
+        }
+      }
 }    

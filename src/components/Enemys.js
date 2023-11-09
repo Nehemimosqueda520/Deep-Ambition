@@ -15,7 +15,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.isFlashed = false;
         this.flashRange = 980;
 
-        
+
 
         // Nueva variable y temporizador para el aturdimiento
         this.stunDuration = 2000; // Duración del aturdimiento en milisegundos
@@ -83,6 +83,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     fleeFrom(flashData) {
+        if (!this.body) {
+            console.log('ENEMY', this)
+             return;
+        }
         const angle = Phaser.Math.Angle.Between(this.x, this.y, flashData.x, flashData.y);
         const velocity = new Phaser.Math.Vector2();
         velocity.setToPolar(angle, this.speed);

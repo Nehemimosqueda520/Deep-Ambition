@@ -8,6 +8,13 @@ export default class Game extends Phaser.Scene {
   constructor() {
     super("game");
     this.timeElapsed = 0;
+    this.flashActive = false; // Variable para el estado del flash
+    this.flashDuration = 1000; // Duración del flash en milisegundos
+    this.flashTimer = 0; // Temporizador para el flash
+    this.boostActive = false; // Variable para el estado del impulso
+    this.boostDuration = 10000; // Duración del impulso en milisegundos (10 segundos)
+    this.boostCooldown = 10000; // Tiempo de espera entre impulsos en milisegundos (10 segundos)
+    this.boostTimer = 0;
   }
 
   init(data) {
@@ -80,13 +87,27 @@ export default class Game extends Phaser.Scene {
       "objects",
       (obj) => obj.name === "principalCharacter"
     );
-    this.character = new PrincipalCharacter(
-      this,
-      this.spawnPoint.x,
-      this.spawnPoint.y,
-      "principal-character",
-      this.velocity
-    );
+    if (this.level <= 1) {
+      // Nivel 1: Flash activado
+      this.character = new PrincipalCharacter(
+        this,
+        this.spawnPoint.x,
+        this.spawnPoint.y,
+        "principal-character",
+        this.velocity
+      );
+    } else {
+      // Nivel 2 y posteriores: Flash desactivado, impulso activado
+      this.character = new PrincipalCharacter(
+        this,
+        this.spawnPoint.x,
+        this.spawnPoint.y,
+        "principal-character",
+        this.velocity + this.level * 100, // Aumenta la velocidad en cada nivel (ajusta según tus necesidades)
+        false // Flash desactivado
+      );
+      this.boostActive = false; // Impulso desactivado
+    }
     this.character.setDepth(2);
     this.add.existing(this.character);
     this.cameras.main.startFollow(this.character);
@@ -102,6 +123,8 @@ export default class Game extends Phaser.Scene {
       this.level1Tile.widthInPixels,
       this.level1Tile.heightInPixels
     );
+
+    this.boostKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
   }
 
   createDynamite() {
@@ -134,38 +157,66 @@ export default class Game extends Phaser.Scene {
   }
 
   update(time, delta) {
-    this.character.update();
+    try {
+      this.character.update();
 
-    this.enemyGroup.getChildren().forEach((enemy) => {
-      if (enemy instanceof Enemy) {
-        enemy.update();
+      this.enemyGroup.getChildren().forEach((enemy) => {
+        if (enemy instanceof Enemy) {
+          enemy.update();
+        }
+      });
+
+      if (this.keyP.isDown) {
+        this.scene.pause();
+        this.scene.launch("pause", {
+          gameSong: this.gameSong,
+        });
       }
-    });
 
-    if (this.keyP.isDown) {
-      this.scene.pause();
-      this.scene.launch("pause", {
-        gameSong: this.gameSong,
-      });
-    }
+      if (this.dynamiteCuantity <= 0) {
+        this.scene.start("win", {
+          level: this.level,
+        });
+        this.gameSong.stop();
+        this.gameSong.loop = false;
+        this.saveGameData();
+      }
 
-    if (this.dynamiteCuantity <= 0) {
-      this.scene.start("win", {
+      this.timeElapsed += delta;
+
+      if (!this.boostActive && this.level > 1) {
+        // Si el impulso no está activo y es un nivel mayor a 1, comienza el tiempo de espera
+        this.boostTimer += delta;
+        if (this.boostTimer >= this.boostCooldown) {
+          // Si ha pasado el tiempo de espera, el impulso está disponible
+          if (this.input.keyboard.checkDown(this.boostKey, this.boostCooldown)) {
+            // Verifica si se ha presionado la tecla para activar el impulso
+            this.boostActive = true;
+            this.boostTimer = 0; // Restablece el temporizador del impulso
+          }
+        }
+      }
+
+      // Si el impulso está activo, actualiza su duración
+      if (this.boostActive) {
+        this.boostTimer += delta;
+        if (this.boostTimer >= this.boostDuration) {
+          this.boostActive = false; // Desactiva el impulso cuando la duración ha transcurrido
+          this.boostTimer = 0; // Restablece el temporizador del impulso
+        }
+      }
+
+      events.emit("actualizarDatos", {
         level: this.level,
+        dynamiteCuantity: this.dynamiteCuantity,
+        health: this.health,
+        timeElapsed: this.timeElapsed,
       });
-      this.gameSong.stop();
-      this.gameSong.loop = false;
-      this.saveGameData();
+    } catch (error) {
+      console.error("Error en el juego:", error);
+      // Reiniciar la escena
+      this.scene.resume();
     }
-
-    this.timeElapsed += delta;
-
-    events.emit("actualizarDatos", {
-      level: this.level,
-      dynamiteCuantity: this.dynamiteCuantity,
-      health: this.health,
-      timeElapsed: this.timeElapsed,
-    });
   }
 
   hitDynamite(character, dynamite) {
@@ -187,7 +238,7 @@ export default class Game extends Phaser.Scene {
     this.gameSong.stop();
     this.gameSong.loop = false;
 
-    
+
 
     events.emit("actualizarDatos", {
       level: this.level,
