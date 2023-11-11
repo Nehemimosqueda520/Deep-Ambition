@@ -1,39 +1,42 @@
 import Phaser from "phaser";
 
 export default class Win extends Phaser.Scene {
+  constructor() {
+    super("win");
+  }
 
-    constructor(){
-        super("win");
-    }
+  init(data) {
+    this.health = data.health;
+    this.level = data.level;
+  }
 
-    init (data) {
-        this.health = data.health;
-        this.level = data.level;
-    }
-
-    create () {
-        // Fondo de la escena
-        this.add.rectangle(0, 0, 1920, 1980, 0x000000, 0.7).setOrigin(0, 0);
+  create() {
+    this.add.image(1920 / 2,
+        1080 / 2, "game-over");
 
         // Mensaje de victoria
-        const winText = this.add.text(1920 / 2, 1080 / 2, '¡Has Ganado!', {
-            fontSize: '36px',
-            color: '#ffffff'
+        const winText = this.add.text(1920 / 2, 1080 * 0.25, '¡Has Ganado!', {
+            fontFamily: 'Time New Roman',
+            fontSize: '160px',
+            color: '#7D080E'
         });
         winText.setOrigin(0.5);
 
         // Mostrar la puntuación
-        const scoreText = this.add.text(1920 / 2, 1080 / 2 + 50, `nivel: ${this.level}`, {
-            fontSize: '24px',
-            color: '#ffffff'
+        const scoreText = this.add.text(1920 / 2, 1080 / 2 + 50, `Nivel: ${this.level}`, {
+            fontFamily: 'Time New Roman',
+            fontSize: '140px',
+            color: '#7D080E'
         });
         scoreText.setOrigin(0.5);
 
         // Botón para reiniciar
-        const restartButton = this.add.text(1920/ 2, 1080/ 2 + 100, 'Reiniciar', {
-            fontSize: '24px',
-            color: '#ffffff',
-            backgroundColor: '#00ff00',
+        const restartButton = this.add.text(1920/ 2, 1080 * 0.75, 'Continuar', {
+            fontFamily: 'Time New Roman',
+            fontSize: '140px',
+            color: '#7D080E',
+            backgroundColor: '#1111111',
+            
         });
         restartButton.setOrigin(0.5);
         restartButton.setInteractive();
@@ -45,7 +48,11 @@ export default class Win extends Phaser.Scene {
                 health: this.health,
             });
         });
-
-    
-    }
+        restartButton.on('pointerover', () => {
+            restartButton.setScale(1.5);
+        });
+        restartButton.on('pointerout', () => {
+            restartButton.setScale(1);
+        });
+  }
 }

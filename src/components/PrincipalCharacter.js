@@ -6,22 +6,25 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
 
     flashEffect;
 
-    // stamina;
-
     cursor;
 
     canUseFlash;
 
-    constructor(scene, x, y, texture, velocity ) {
+    constructor(scene, x, y, texture, velocity, canUseFlash ) {
         super(scene, x, y, texture);
 
         this.setTexture("principal-character");
+        
+        this.steps = scene.sound.add("steps");
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
 
         this.setCollideWorldBounds(true);
         
+        this.isBoosting = false;
+        this.boostDuration = 10000; // Duración del impulso en milisegundos (10 segundos)
+        this.boostCooldown = 10000; 
 
         this.velocity = velocity;
         this.cursor = scene.input.keyboard.createCursorKeys();
@@ -32,7 +35,7 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
 
         this.darkness = scene.add.image(x, y, "darkness").setDepth(1);
 
-        this.canUseFlash = true;
+        this.canUseFlash = canUseFlash || true;
 
 
         this.hitboxHeight = this.height * 0.4;
@@ -50,10 +53,12 @@ update() {
         this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, -this.velocity, 0.2));
         this.darkness.setPosition(this.x, this.y);
         this.play('character-left', true);
+        // this.steps.play({ loop: true })
     } else if (this.cursor.right.isDown && !this.cursor.left.isDown) {
         this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, this.velocity, 0.2));
         this.darkness.setPosition(this.x, this.y);
         this.play('character-right', true);
+        // this.steps.play({ loop: true })
     } else {
         this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, 0, 0.2));
     }
@@ -63,10 +68,12 @@ update() {
         this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, -this.velocity, 0.2));
         this.darkness.setPosition(this.x, this.y);
         this.play('character-up', true);
+        // this.steps.play({ loop: true })
     } else if (this.cursor.down.isDown && !this.cursor.up.isDown) {
         this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, this.velocity, 0.2));
         this.darkness.setPosition(this.x, this.y);
         this.play('character-down', true);
+        // this.steps.play({ loop: true })
     } else {
         this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, 0, 0.2));
     }
@@ -74,6 +81,8 @@ update() {
     // Si ninguna tecla de dirección está presionada, reproducir la animación "character-idle"
     if (!this.cursor.left.isDown && !this.cursor.right.isDown && !this.cursor.up.isDown && !this.cursor.down.isDown) {
         this.play('character-idle', true);
+        // this.steps.stop()
+        // this.steps.loop = false;
     }
 
 
@@ -96,5 +105,31 @@ update() {
                 this.flashEffect.setVisible(false);
             });
         }
+
+        if (this.cursor.space.isDown) {
+            this.applyBoost(); // Llama a la función de impulso al presionar la tecla espaciadora
+        }   
     }
+
+    applyBoost() {
+        if (this.canUseFlash && !this.isBoosting) {
+          // Activa el impulso
+          this.isBoosting = true;
+          this.canUseFlash = false;
+      
+          // Establece la velocidad durante el impulso
+          this.setVelocityX(this.velocity * 2); // Aumenta la velocidad (ajusta según tus necesidades)
+      
+          // Configura un temporizador para desactivar el impulso después de la duración especificada
+          this.scene.time.delayedCall(this.boostDuration, () => {
+            this.isBoosting = false;
+            this.setVelocityX(this.velocity); // Restablece la velocidad normal
+          });
+      
+          // Configura un temporizador para habilitar el uso del impulso nuevamente después del tiempo de espera
+          this.scene.time.delayedCall(this.boostCooldown, () => {
+            this.canUseFlash = true; // Habilita nuevamente el uso del impulso
+          });
+        }
+      }
 }    

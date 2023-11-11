@@ -8,13 +8,15 @@ export default class Game extends Phaser.Scene {
   constructor() {
     super("game");
     this.timeElapsed = 0;
+    this.flashActive = false;
+    this.flashDuration = 1000;
+    this.flashTimer = 0;
   }
 
   init(data) {
     this.velocity = data.velocity || 400;
     this.level = data.level || 1;
     this.dynamiteCuantity = data.dynamiteCuantity || 22;
-    this.health = data.health || 3;
   }
 
   create() {
@@ -23,8 +25,14 @@ export default class Game extends Phaser.Scene {
       level: this.level,
     });
 
-    this.gameSong = this.sound.add("game-song");
+    this.gameSong = this.sound.add("game-song").setVolume(0.3);
     this.gameSong.play({ loop: true });
+
+    this.gameSong2 = this.sound.add("game-song2").setVolume(0.5);
+    this.gameSong2.play({ loop: true });
+
+
+    this.dynamiteSound = this.sound.add("dynamite-sound");
 
     this.initializeLevel();
     this.createCharacter();
@@ -71,7 +79,7 @@ export default class Game extends Phaser.Scene {
       0,
       0
     );
-    this.wallDecorativeLayer.setDepth(3);
+    this.wallDecorativeLayer.setDepth(4);
     this.wallCollisionLayer.setCollisionByProperty({ colision: true });
   }
 
@@ -80,14 +88,27 @@ export default class Game extends Phaser.Scene {
       "objects",
       (obj) => obj.name === "principalCharacter"
     );
-    this.character = new PrincipalCharacter(
-      this,
-      this.spawnPoint.x,
-      this.spawnPoint.y,
-      "principal-character",
-      this.velocity
-    );
-    this.character.setDepth(2);
+    if (this.level <= 1) {
+      // Nivel 1: Flash activado
+      this.character = new PrincipalCharacter(
+        this,
+        this.spawnPoint.x,
+        this.spawnPoint.y,
+        "principal-character",
+        this.velocity
+      );
+    } else {
+      this.character = new PrincipalCharacter(
+        this,
+        this.spawnPoint.x,
+        this.spawnPoint.y,
+        "principal-character",
+        this.velocity + this.level * 100,
+        false
+      );
+      this.boostActive = false; 
+    }
+    this.character.setDepth(3);
     this.add.existing(this.character);
     this.cameras.main.startFollow(this.character);
     this.physics.world.setBounds(
@@ -102,10 +123,12 @@ export default class Game extends Phaser.Scene {
       this.level1Tile.widthInPixels,
       this.level1Tile.heightInPixels
     );
+
+    this.boostKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
   }
 
   createDynamite() {
-    this.dynamite = new DynamiteGroup(this, 0); // Ajusta la cantidad según tus necesidades
+    this.dynamite = new DynamiteGroup(this, 0); 
     this.objectsLayer.objects.forEach((objData) => {
       const { x = 0, y = 0, name } = objData;
       if (name === "dynamite") {
@@ -126,7 +149,7 @@ export default class Game extends Phaser.Scene {
     this.objectsLayer.objects.forEach((objData) => {
       const { x = 0, y = 0, name } = objData;
       if (name === "enemy") {
-        const enemy = new Enemy(this, x, y, "enemy", this.character, 1000, this.level); // Ajusta la velocidad según tus necesidades
+        const enemy = new Enemy(this, x, y, "enemy", this.character, 1000, this.level); 
         this.enemyGroup.add(enemy);
       }
     });
@@ -134,47 +157,48 @@ export default class Game extends Phaser.Scene {
   }
 
   update(time, delta) {
-    this.character.update();
+      this.character.update();
 
-    this.enemyGroup.getChildren().forEach((enemy) => {
-      if (enemy instanceof Enemy) {
-        enemy.update();
+      this.enemyGroup.getChildren().forEach((enemy) => {
+        if (enemy instanceof Enemy) {
+          enemy.update();
+        }
+      });
+
+      if (this.keyP.isDown) {
+        this.scene.pause();
+        this.scene.launch("pause", {
+          gameSong: this.gameSong,
+        });
       }
-    });
 
-    if (this.keyP.isDown) {
-      this.scene.pause();
-      this.scene.launch("pause", {
-        gameSong: this.gameSong,
-      });
-    }
+      if (this.dynamiteCuantity <= 0) {
+        this.scene.start("win", {
+          level: this.level,
+        });
+        this.gameSong.stop();
+        this.gameSong.loop = false;
+        this.gameSong2.stop();
+        this.gameSong2.loop = false;
+        this.saveGameData();
+      }
 
-    if (this.dynamiteCuantity <= 0) {
-      this.scene.start("win", {
+      this.timeElapsed += delta;
+
+      events.emit("actualizarDatos", {
         level: this.level,
+        dynamiteCuantity: this.dynamiteCuantity,
+        timeElapsed: this.timeElapsed,
       });
-      this.gameSong.stop();
-      this.gameSong.loop = false;
-      this.saveGameData();
-    }
-
-    this.timeElapsed += delta;
-
-    events.emit("actualizarDatos", {
-      level: this.level,
-      dynamiteCuantity: this.dynamiteCuantity,
-      health: this.health,
-      timeElapsed: this.timeElapsed,
-    });
   }
 
   hitDynamite(character, dynamite) {
     dynamite.disableBody(true, true);
     this.dynamiteCuantity -= 1;
+    this.dynamiteSound.play();
     events.emit("actualizarDatos", {
       level: this.level,
       dynamiteCuantity: this.dynamiteCuantity,
-      health: this.health,
     });
   }
 
@@ -182,24 +206,23 @@ export default class Game extends Phaser.Scene {
     this.level -= 1;
     this.scene.start("lose", {
       level: this.level,
-      health: this.health,
     });
     this.gameSong.stop();
     this.gameSong.loop = false;
+    this.gameSong2.stop();
+    this.gameSong2.loop = false;
 
-    
+
 
     events.emit("actualizarDatos", {
       level: this.level,
       dynamiteCuantity: this.dynamiteCuantity,
-      health: this.health,
     });
   }
 
   saveGameData() {
     this.firebase.saveGameData(this.user.uid, {
       level: this.level,
-      health: this.health,
       day: new Date(),
       timeElapsed: this.timeElapsed,
     });

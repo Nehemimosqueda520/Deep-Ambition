@@ -15,14 +15,15 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.isFlashed = false;
         this.flashRange = 980;
 
-        
+
 
         // Nueva variable y temporizador para el aturdimiento
         this.stunDuration = 2000; // Duración del aturdimiento en milisegundos
         this.stunTimer = 0;
 
         const hitboxHeight = this.height * 0.4;
-        this.body.setSize(this.width, hitboxHeight);
+        const hitboxWidth = this.width * 0.8;
+        this.body.setSize(hitboxWidth, hitboxHeight);
         this.body.setOffset(0, this.height - hitboxHeight);
 
         scene.events.on('flashActivated', (flashData) => {
@@ -83,6 +84,10 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     }
 
     fleeFrom(flashData) {
+        if (!this.body) {
+            console.log('ENEMY', this)
+             return;
+        }
         const angle = Phaser.Math.Angle.Between(this.x, this.y, flashData.x, flashData.y);
         const velocity = new Phaser.Math.Vector2();
         velocity.setToPolar(angle, this.speed);

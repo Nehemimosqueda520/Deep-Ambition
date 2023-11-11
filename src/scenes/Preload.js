@@ -20,8 +20,8 @@ export default class Preload extends Phaser.Scene {
     this.load.image("flash-effect", "./assets/particles/flashEffect.webp");
     this.load.image("Atlas", "./assets/sprites/Atlas.png");
     this.load.spritesheet("door", "./assets/sprites/door.png", {
-      frameWidth: 300,
-      frameHeight: 600,
+      frameWidth: 580 / 2,
+      frameHeight: 250,
     });
     this.load.image("anonymous-logo", "./assets/sprites/anonymousLogo.png");
     this.load.image("github-logo", "./assets/sprites/githubLogo.png");
@@ -37,11 +37,16 @@ export default class Preload extends Phaser.Scene {
       "./assets/sprites/portugueseButton.png"
     );
     this.load.image("english-button", "./assets/sprites/englishButton.webp");
+    this.load.image("game-over", "./assets/sprites/gameOver.png");
     this.load.audio("main-menu-song", "./assets/audio/mainMenuSong.mp3");
     this.load.audio("game-song", "./assets/audio/gameSong.mp3");
+    this.load.audio("game-song2", "./assets/audio/gameSong2.mp3");
     this.load.audio("pointerOver", "./assets/audio/ui-pointerOver.mp3");
     this.load.audio("lobby-song", "./assets/audio/lobbySong.mp3");
+    this.load.audio ("dynamite-sound", "./assets/audio/dynamiteSound.mp3");
+    this.load.audio ("steps", "./assets/audio/steps.mp3");
     this.load.tilemapTiledJSON("level1", "./assets/tileMap/Level1.json");
+    this.load.tilemapTiledJSON("lobby-tile", "./assets/tileMap/lobby.json");
   }
 
   init(language) {
