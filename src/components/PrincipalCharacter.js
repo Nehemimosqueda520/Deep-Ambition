@@ -14,6 +14,8 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
         super(scene, x, y, texture);
 
         this.setTexture("principal-character");
+        
+        this.steps = scene.sound.add("steps");
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -51,10 +53,12 @@ update() {
         this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, -this.velocity, 0.2));
         this.darkness.setPosition(this.x, this.y);
         this.play('character-left', true);
+        // this.steps.play({ loop: true })
     } else if (this.cursor.right.isDown && !this.cursor.left.isDown) {
         this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, this.velocity, 0.2));
         this.darkness.setPosition(this.x, this.y);
         this.play('character-right', true);
+        // this.steps.play({ loop: true })
     } else {
         this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, 0, 0.2));
     }
@@ -64,10 +68,12 @@ update() {
         this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, -this.velocity, 0.2));
         this.darkness.setPosition(this.x, this.y);
         this.play('character-up', true);
+        // this.steps.play({ loop: true })
     } else if (this.cursor.down.isDown && !this.cursor.up.isDown) {
         this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, this.velocity, 0.2));
         this.darkness.setPosition(this.x, this.y);
         this.play('character-down', true);
+        // this.steps.play({ loop: true })
     } else {
         this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, 0, 0.2));
     }
@@ -75,6 +81,8 @@ update() {
     // Si ninguna tecla de dirección está presionada, reproducir la animación "character-idle"
     if (!this.cursor.left.isDown && !this.cursor.right.isDown && !this.cursor.up.isDown && !this.cursor.down.isDown) {
         this.play('character-idle', true);
+        // this.steps.stop()
+        // this.steps.loop = false;
     }
 
 

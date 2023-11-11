@@ -14,7 +14,6 @@ import Lose from "./scenes/lose";
 import FirebasePlugin from "./plugins/FirebasePlugin";
 import Login from "./scenes/Login";
 
-
 const config = {
   type: Phaser.AUTO,
   width: 1920,
@@ -37,7 +36,19 @@ const config = {
       debug: false,
     },
   },
-  scene: [Preload, Login, Lobby, PrincipalMenu, Game, UI, Settings, Tutorial, Pause, Win, Lose],
+  scene: [
+    Preload,
+    Login,
+    Lobby,
+    PrincipalMenu,
+    Game,
+    UI,
+    Settings,
+    Tutorial,
+    Pause,
+    Win,
+    Lose,
+  ],
   plugins: {
     global: [
       {

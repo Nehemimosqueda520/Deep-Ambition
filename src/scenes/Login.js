@@ -7,7 +7,6 @@ export default class Login extends Phaser.Scene {
   }
 
   create() {
-    // agregar un texto "Login" en la parte superior de la pantalla
     this.lobbyScene = "principal-menu";
     this.add
       .text(1920 / 2, 100, getPhrase("Ingresar por:"), {
@@ -15,7 +14,7 @@ export default class Login extends Phaser.Scene {
         fontSize: 48,
       })
       .setOrigin(0.5);
-    // Agregar un texto "Ingresas de forma Anonima" que al hacer clic me levante un popup js para ingresar los datos
+
     this.add
       .image(1920 * 0.75, 500, "anonymous-logo")
       .setScale(0.5)

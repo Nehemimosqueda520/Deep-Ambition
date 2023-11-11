@@ -22,7 +22,8 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.stunTimer = 0;
 
         const hitboxHeight = this.height * 0.4;
-        this.body.setSize(this.width, hitboxHeight);
+        const hitboxWidth = this.width * 0.8;
+        this.body.setSize(hitboxWidth, hitboxHeight);
         this.body.setOffset(0, this.height - hitboxHeight);
 
         scene.events.on('flashActivated', (flashData) => {
