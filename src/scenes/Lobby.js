@@ -176,7 +176,7 @@ export default class Lobby extends Phaser.Scene {
     this.tweens.add({
       targets: this.fadingOverlay,
       alpha: 1, // Cambiado a 1 para hacer desaparecer el overlay
-      duration: 200,
+      duration: 0,
       onComplete: () => {
         this.scene.start("game", {
           velocity: this.velocity,
@@ -188,7 +188,7 @@ export default class Lobby extends Phaser.Scene {
       },
     });
     this.lobbySong.stop();
-    this.lobbySong.setLoop(false);
+    this.lobbySong.destroy();
   }
 
   goTolevel2() {
@@ -198,7 +198,7 @@ export default class Lobby extends Phaser.Scene {
       this.tweens.add({
         targets: this.fadingOverlay,
         alpha: 1, // Cambiado a 1 para hacer desaparecer el overlay
-        duration: 200,
+        duration: 0,
         onComplete: () => {
           this.scene.start("game", {
             velocity: this.velocity,
@@ -210,7 +210,7 @@ export default class Lobby extends Phaser.Scene {
         },
       });
       this.lobbySong.stop();
-      this.lobbySong.setLoop(false);
+      this.lobbySong.destroy();
     }
   }
 
@@ -221,7 +221,7 @@ export default class Lobby extends Phaser.Scene {
       this.tweens.add({
         targets: this.fadingOverlay,
         alpha: 1, // Cambiado a 1 para hacer desaparecer el overlay
-        duration: 200,
+        duration: 0,
         onComplete: () => {
           this.scene.start("game", {
             velocity: this.velocity,
@@ -233,7 +233,7 @@ export default class Lobby extends Phaser.Scene {
         },
       });
       this.lobbySong.stop();
-      this.lobbySong.setLoop(false);
+      this.lobbySong.destroy();
     }
   }
 
