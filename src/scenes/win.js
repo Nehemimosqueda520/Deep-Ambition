@@ -8,51 +8,73 @@ export default class Win extends Phaser.Scene {
   init(data) {
     this.health = data.health;
     this.level = data.level;
+    this.levelsPased = data.levelsPased 
   }
 
   create() {
-    this.add.image(1920 / 2,
-        1080 / 2, "game-over");
+        this.pointerSound = this.sound.add("pointerOver");
+        this.pointerdownSound = this.sound.add("PointerdownFX");
+        this.winVideo = this.add.video(1920/2, 1080/2, "win-cinematic");
+        this.winVideo.play();
+        this.winVideo.setDepth(1);
+        this.explosionSound = this.sound.add ("dynamite-explosion");
+        this.explosionSound.play();
 
-        // Mensaje de victoria
-        const winText = this.add.text(1920 / 2, 1080 * 0.25, '¡Has Ganado!', {
-            fontFamily: 'Time New Roman',
-            fontSize: '160px',
-            color: '#7D080E'
-        });
-        winText.setOrigin(0.5);
+        this.winVideo.on('complete', () => {
 
-        // Mostrar la puntuación
-        const scoreText = this.add.text(1920 / 2, 1080 / 2 + 50, `Nivel: ${this.level}`, {
-            fontFamily: 'Time New Roman',
-            fontSize: '140px',
-            color: '#7D080E'
-        });
-        scoreText.setOrigin(0.5);
+          this.tweens.add({
+            targets: this.fadingOverlay,
+            alpha: 1,
+            duration: 1000,
+            onComplete: () => {
+              this.explosionSound.stop();
+              this.explosionSound.destroy();
+                this.scene.start('lobby', {
+                    level: this.level,
+                    health: this.health,
+                    levelsPased: this.levelsPased
+                });
+            },
+          });
+      });
 
-        // Botón para reiniciar
-        const restartButton = this.add.text(1920/ 2, 1080 * 0.75, 'Continuar', {
-            fontFamily: 'Time New Roman',
-            fontSize: '140px',
-            color: '#7D080E',
-            backgroundColor: '#1111111',
-            
-        });
-        restartButton.setOrigin(0.5);
-        restartButton.setInteractive();
+        this.fadingOverlay = this.add
+        .rectangle(
+          0,
+          0,
+          this.cameras.main.width,
+          this.cameras.main.height,
+          0x000000
+        )
+        .setOrigin(0);
+      this.fadingOverlay.setAlpha(0)
+      .setDepth(4);
 
-        restartButton.on('pointerdown', () => {
-            // Aquí puedes agregar lógica para reiniciar el juego, por ejemplo, regresando a la escena inicial.
-            this.scene.start('lobby', {
-                level: this.level,
-                health: this.health,
-            });
+        this.levelsPased += 1;
+        if (this.levelsPased >= 3) {
+          
+          this.finalVideo = this.add.video (1980 / 2, 1080/2, "final-cinematic");
+          this.winVideo.stop();
+
+          // Reproduce el video
+          this.finalVideo.play ();
+          this.finalVideo.setDepth(7);
+        
+          // Establece un evento para cuando el finalVideo termine
+          this.finalVideo.on('start', () => {
         });
-        restartButton.on('pointerover', () => {
-            restartButton.setScale(1.5);
+        
+        this.finalVideo.on('complete', () => {
+            this.scene.start('principal-menu');
         });
-        restartButton.on('pointerout', () => {
-            restartButton.setScale(1);
-        });
+
+        this.input.keyboard.once('keydown-SPACE', () => {
+          // Si la tecla de espacio es presionada, ejecuta la función fadeOutCinematic
+          this.scene.start("credits");
+      }, this);
+        }
   }
+
 }
+    
+

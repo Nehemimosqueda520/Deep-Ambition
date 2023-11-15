@@ -17,6 +17,7 @@ export default class Game extends Phaser.Scene {
     this.velocity = data.velocity || 400;
     this.level = data.level || 1;
     this.dynamiteCuantity = data.dynamiteCuantity || 22;
+    this.levelsPased = data.levelsPased  ;
   }
 
   create() {
@@ -24,6 +25,27 @@ export default class Game extends Phaser.Scene {
     this.scene.launch("ui", {
       level: this.level,
     });
+
+    this.fadingOverlay = this.add
+    .rectangle(
+      0,
+      0,
+      this.cameras.main.width,
+      this.cameras.main.height,
+      0x000000
+    )
+    this.fadingOverlay.setOrigin(0)
+    .setDepth(7);
+
+    this.tweens.add({
+      targets: this.fadingOverlay,
+      alpha: 0, // Cambiado a 0 para hacer desaparecer el overlay
+      duration: 4000,
+      onComplete: () => {
+        this.fadingOverlay.destroy();
+      },
+  });
+  
 
     this.gameSong = this.sound.add("game-song").setVolume(0.3);
     this.gameSong.play({ loop: true });
@@ -58,7 +80,7 @@ export default class Game extends Phaser.Scene {
 
     events.on("music", this.musicTransfer, this);
 
-    this.keyP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);
+    this.keyEsc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
   }
 
   initializeLevel() {
@@ -84,11 +106,12 @@ export default class Game extends Phaser.Scene {
   }
 
   createCharacter() {
+
     this.spawnPoint = this.level1Tile.findObject(
       "objects",
       (obj) => obj.name === "principalCharacter"
     );
-    if (this.level <= 1) {
+
       // Nivel 1: Flash activado
       this.character = new PrincipalCharacter(
         this,
@@ -97,17 +120,6 @@ export default class Game extends Phaser.Scene {
         "principal-character",
         this.velocity
       );
-    } else {
-      this.character = new PrincipalCharacter(
-        this,
-        this.spawnPoint.x,
-        this.spawnPoint.y,
-        "principal-character",
-        this.velocity + this.level * 100,
-        false
-      );
-      this.boostActive = false; 
-    }
     this.character.setDepth(3);
     this.add.existing(this.character);
     this.cameras.main.startFollow(this.character);
@@ -124,7 +136,6 @@ export default class Game extends Phaser.Scene {
       this.level1Tile.heightInPixels
     );
 
-    this.boostKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B);
   }
 
   createDynamite() {
@@ -149,7 +160,7 @@ export default class Game extends Phaser.Scene {
     this.objectsLayer.objects.forEach((objData) => {
       const { x = 0, y = 0, name } = objData;
       if (name === "enemy") {
-        const enemy = new Enemy(this, x, y, "enemy", this.character, 1000, this.level); 
+        const enemy = new Enemy(this, x, y, "enemy", this.character, 1000, this.level).setScale(0.8); 
         this.enemyGroup.add(enemy);
       }
     });
@@ -157,6 +168,8 @@ export default class Game extends Phaser.Scene {
   }
 
   update(time, delta) {
+
+    this.fadingOverlay.setPosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
       this.character.update();
 
       this.enemyGroup.getChildren().forEach((enemy) => {
@@ -165,7 +178,7 @@ export default class Game extends Phaser.Scene {
         }
       });
 
-      if (this.keyP.isDown) {
+      if (this.keyEsc.isDown) {
         this.scene.pause();
         this.scene.launch("pause", {
           gameSong: this.gameSong,
@@ -173,14 +186,15 @@ export default class Game extends Phaser.Scene {
       }
 
       if (this.dynamiteCuantity <= 0) {
+        this.gameSong.stop();
+        this.gameSong.destroy();
+        this.gameSong2.stop();
+        this.gameSong2.destroy();
+        this.saveGameData();
         this.scene.start("win", {
           level: this.level,
+          levelsPased: this.levelsPased 
         });
-        this.gameSong.stop();
-        this.gameSong.loop = false;
-        this.gameSong2.stop();
-        this.gameSong2.loop = false;
-        this.saveGameData();
       }
 
       this.timeElapsed += delta;
@@ -203,22 +217,38 @@ export default class Game extends Phaser.Scene {
   }
 
   damage() {
-    this.level -= 1;
-    this.scene.start("lose", {
-      level: this.level,
-    });
+    this.scene.pause();
+
+    // Obtén las coordenadas actuales de la cámara
+    const cameraX = this.cameras.main.scrollX;
+    const cameraY = this.cameras.main.scrollY;
+
+    // Calcula las coordenadas del video en relación con la cámara
+    this.videoX = cameraX + 1980 / 2;
+    this.videoY = cameraY + 1080 / 2;
+
+    this.video = this.add.video(this.videoX, this.videoY, "jumpscare");
     this.gameSong.stop();
-    this.gameSong.loop = false;
+    this.gameSong.destroy();
     this.gameSong2.stop();
-    this.gameSong2.loop = false;
+    this.gameSong2.destroy();;
 
+    // Reproduce el video
+    this.video.play();
+    this.video.setDepth(4);
 
-
-    events.emit("actualizarDatos", {
-      level: this.level,
-      dynamiteCuantity: this.dynamiteCuantity,
-    });
-  }
+    this.video.on('complete', () => {
+        this.level -= 1;
+        this.scene.start("lose", {
+            level: this.level,
+            levelsPassed: this.levelsPased
+        });
+        events.emit("actualizarDatos", {
+            level: this.level,
+            dynamiteCuantity: this.dynamiteCuantity,
+        });
+    }, this);
+}
 
   saveGameData() {
     this.firebase.saveGameData(this.user.uid, {
