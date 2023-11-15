@@ -16,7 +16,7 @@ export default class Lobby extends Phaser.Scene {
     this.level = data.level || 0;
     this.health = data.health || 3;
     this.dynamiteCuantity = 0;
-    this.levelsPased = data.levelsPased || 3;
+    this.levelsPased = data.levelsPased || 0;
   }
 
   create() {
@@ -178,7 +178,7 @@ export default class Lobby extends Phaser.Scene {
       alpha: 1, // Cambiado a 1 para hacer desaparecer el overlay
       duration: 200,
       onComplete: () => {
-        this.scene.start("win", {
+        this.scene.start("game", {
           velocity: this.velocity,
           level: this.level,
           health: this.health,
