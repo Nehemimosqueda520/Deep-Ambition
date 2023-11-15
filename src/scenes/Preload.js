@@ -16,8 +16,11 @@ export default class Preload extends Phaser.Scene {
       frameHeight: 212,
     });
     this.load.image("dynamite", "./assets/sprites/dynamite.png");
-    this.load.image("enemy", "./assets/sprites/enemy.png");
-    this.load.image("flash-effect", "./assets/particles/flashEffect.webp");
+    this.load.spritesheet("enemy", "./assets/sprites/enemy.png", {
+      frameWidth: 180,
+      frameHeight: 250,
+    });
+    this.load.image("flash-effect", "./assets/particles/flashEffect.png");
     this.load.image("Atlas", "./assets/sprites/Atlas.png");
     this.load.spritesheet("door", "./assets/sprites/door.png", {
       frameWidth: 580 / 2,
@@ -26,9 +29,27 @@ export default class Preload extends Phaser.Scene {
     this.load.image("anonymous-logo", "./assets/sprites/anonymousLogo.png");
     this.load.image("github-logo", "./assets/sprites/githubLogo.png");
     this.load.image("google-logo", "./assets/sprites/googleLogo.png");
+    this.load.image ("wasd", "./assets/sprites/wasd.png");
+    this.load.image ("space", "./assets/sprites/space.png");
     this.load.video(
       "main-menu-background",
       "./assets/sprites/mainMenuBackground.mp4"
+    );
+    this.load.video(
+      "main-cinematic",
+      "./assets/sprites/mainCinematic.mp4"
+    );
+    this.load.video(
+      "final-cinematic",
+      "./assets/sprites/finalCinematic.mp4"
+    );
+    this.load.video(
+      "win-cinematic",
+      "./assets/sprites/winCinematic.mp4"
+    );
+    this.load.video(
+      "jumpscare",
+      "./assets/sprites/jumpscare.mp4"
     );
     this.load.image("darkness", "./assets/particles/darkness.png");
     this.load.image("spanish-button", "./assets/sprites/spanishButton.png");
@@ -44,7 +65,11 @@ export default class Preload extends Phaser.Scene {
     this.load.audio("pointerOver", "./assets/audio/ui-pointerOver.mp3");
     this.load.audio("lobby-song", "./assets/audio/lobbySong.mp3");
     this.load.audio ("dynamite-sound", "./assets/audio/dynamiteSound.mp3");
+    this.load.audio ("dynamite-explosion", "./assets/audio/dynamiteExplosion.mp3");
+    this.load.audio ("main-cinematic-song", "./assets/audio/mainCinematicSong.mp3");
     this.load.audio ("steps", "./assets/audio/steps.mp3");
+    this.load.audio ("enemyFollow", "./assets/audio/enemyFollow.mp3");
+    this.load.audio ("PointerdownFX", "./assets/audio/PointerdownFX.mp3")
     this.load.tilemapTiledJSON("level1", "./assets/tileMap/Level1.json");
     this.load.tilemapTiledJSON("lobby-tile", "./assets/tileMap/lobby.json");
   }
@@ -164,7 +189,47 @@ export default class Preload extends Phaser.Scene {
       frameRate: 6,
       repeat: -1,
     });
+
+    this.anims.create({
+      key: "enemy-down",
+      frames: this.anims.generateFrameNumbers("enemy", {
+        start: 8,
+        end: 11,
+      }),
+      frameRate: 10,
+      repeat: -1,
+    });
+    this.anims.create({
+      key: "enemy-up",
+      frames: this.anims.generateFrameNumbers("enemy", {
+        start: 12,
+        end: 15,
+      }),
+      frameRate: 8,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "enemy-right",
+      frames: this.anims.generateFrameNumbers("enemy", {
+        start: 0,
+        end: 3,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: "enemy-left",
+      frames: this.anims.generateFrameNumbers("enemy", {
+        start: 4,
+        end: 7,
+      }),
+      frameRate: 6,
+      repeat: -1,
+    });
   }
+  
 
   updateLoadingText() {
     this.dotCount = (this.dotCount % 3) + 1; // Alterna entre 1, 2, 3, 4

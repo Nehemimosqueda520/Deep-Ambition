@@ -16,9 +16,30 @@ export default class Lobby extends Phaser.Scene {
     this.level = data.level || 0;
     this.health = data.health || 3;
     this.dynamiteCuantity = 0;
+    this.levelsPased = data.levelsPased || 3;
   }
 
   create() {
+
+    this.fadingOverlay = this.add
+    .rectangle(
+      0,
+      0,
+      this.cameras.main.width,
+      this.cameras.main.height,
+      0x000000
+    )
+    this.fadingOverlay.setOrigin(0)
+    .setDepth(7);
+
+
+    this.tweens.add({
+      targets: this.fadingOverlay,
+      alpha: 0, // Cambiado a 0 para hacer desaparecer el overlay
+      duration: 2000,
+      onComplete: () => {
+      },
+  });
     this.lobbyTile = this.make.tilemap({ key: "lobby-tile" });
     this.objectsLayer = this.lobbyTile.getObjectLayer("doors");
     this.atlas = this.lobbyTile.addTilesetImage("Atlas", "Atlas");
@@ -41,16 +62,22 @@ export default class Lobby extends Phaser.Scene {
 
     this.Level1Door = this.physics.add
       .sprite(this.spawnPoint.x, this.spawnPoint.y, "door")
-      .setImmovable();
+      .setImmovable()
+      .setSize(580/2, 330) // Ancho x Alto de la hitbox
+      .setOffset(0, 0) 
     this.Level1Door.setFrame(3);
     this.Level1Door.setDepth(1);
     this.Level2Door = this.physics.add
       .sprite(this.spawnPoint2.x, this.spawnPoint2.y, "door")
-      .setImmovable();
+      .setImmovable()
+      .setSize(580/2, 330)
+      .setOffset(0, 0) 
       this.Level2Door.setDepth(1);
     this.Level3Door = this.physics.add
       .sprite(this.spawnPoint3.x, this.spawnPoint3.y, "door")
-      .setImmovable();
+      .setImmovable()
+      .setSize(580/2, 330)
+      .setOffset(0, 0)
       this.Level3Door.setDepth(1);
     this.character = new PrincipalCharacter(
       this,
@@ -83,7 +110,40 @@ export default class Lobby extends Phaser.Scene {
       this
     );
 
-    // this.physics.add.collider(this.character, this.wallCollisionLayer);
+
+    this.wasdImage = this.add.image(200, 100, "wasd");
+    this.wasdImage.setOrigin(0.5, 0.5);
+    this.wasdImage.setScale(1);
+    this.wasdImage.setDepth(5);
+
+    this.spaceImage = this.add.image(200, 300, "space");
+    this.spaceImage.setOrigin(0.5, 0.5);
+    this.spaceImage.setScale(1);
+    this.spaceImage.setDepth(5);
+    // Agregar el texto "moverse"
+    this.moveText = this.add.text(200, 100, "Moverse", {
+        fontFamily: "Arial",
+        fontSize: "24px",
+        color: "#ffffff",
+    });
+    this.moveText.setOrigin(0.5, 0.5);
+    
+
+    // Configurar temporizador para desvanecer la imagen y el texto después de dos segundos
+    this.time.delayedCall(8000, () => {
+        this.tweens.add({
+            targets: [this.wasdImage, this.moveText,this.spaceImage],
+            alpha: 0,
+            duration: 500,  // Duración de la animación de desvanecimiento en milisegundos
+            onComplete: () => {
+                this.wasdImage.destroy();  // Eliminar la imagen después de la animación
+                this.moveText.destroy();   // Eliminar el texto después de la animación
+            },
+        });
+    });
+
+
+  this.physics.add.collider(this.character, this.wallCollisionLayer);
   }
 
   update() {
@@ -112,11 +172,20 @@ export default class Lobby extends Phaser.Scene {
   goToLevel1() {
     this.level = 1;
     this.dynamiteCuantity = 22;
-    this.scene.start("game", {
-      velocity: this.velocity,
-      level: this.level,
-      health: this.health,
-      dynamiteCuantity: this.dynamiteCuantity,
+
+    this.tweens.add({
+      targets: this.fadingOverlay,
+      alpha: 1, // Cambiado a 1 para hacer desaparecer el overlay
+      duration: 200,
+      onComplete: () => {
+        this.scene.start("win", {
+          velocity: this.velocity,
+          level: this.level,
+          health: this.health,
+          dynamiteCuantity: this.dynamiteCuantity,
+          levelsPased: this.levelsPased
+        });
+      },
     });
     this.lobbySong.stop();
     this.lobbySong.setLoop(false);
@@ -126,11 +195,19 @@ export default class Lobby extends Phaser.Scene {
     if (this.level >= 1) {
       this.level = 2;
       this.dynamiteCuantity = 22;
-      this.scene.start("game", {
-        velocity: this.velocity,
-        level: this.level,
-        health: this.health,
-        dynamiteCuantity: this.dynamiteCuantity,
+      this.tweens.add({
+        targets: this.fadingOverlay,
+        alpha: 1, // Cambiado a 1 para hacer desaparecer el overlay
+        duration: 200,
+        onComplete: () => {
+          this.scene.start("game", {
+            velocity: this.velocity,
+            level: this.level,
+            health: this.health,
+            dynamiteCuantity: this.dynamiteCuantity,
+            levelsPased: this.levelsPased
+          });
+        },
       });
       this.lobbySong.stop();
       this.lobbySong.setLoop(false);
@@ -141,14 +218,23 @@ export default class Lobby extends Phaser.Scene {
     if (this.level >= 2) {
       this.level = 3;
       this.dynamiteCuantity = 22;
-      this.scene.start("game", {
-        velocity: this.velocity,
-        level: this.level,
-        health: this.health,
-        dynamiteCuantity: this.dynamiteCuantity,
+      this.tweens.add({
+        targets: this.fadingOverlay,
+        alpha: 1, // Cambiado a 1 para hacer desaparecer el overlay
+        duration: 200,
+        onComplete: () => {
+          this.scene.start("game", {
+            velocity: this.velocity,
+            level: this.level,
+            health: this.health,
+            dynamiteCuantity: this.dynamiteCuantity,
+            levelsPased: this.levelsPased
+          });
+        },
       });
       this.lobbySong.stop();
       this.lobbySong.setLoop(false);
     }
   }
+
 }

@@ -6,10 +6,10 @@ import UI from "./scenes/UI";
 import Game from "./scenes/Game";
 import PrincipalMenu from "./scenes/PrincipalMenu";
 import Settings from "./scenes/Settings";
-import Tutorial from "./scenes/Tutorial";
 import Pause from "./scenes/pause";
 import Win from "./scenes/win";
 import Lose from "./scenes/lose";
+import Credits from "./scenes/credits";
 
 import FirebasePlugin from "./plugins/FirebasePlugin";
 import Login from "./scenes/Login";
@@ -44,10 +44,10 @@ const config = {
     Game,
     UI,
     Settings,
-    Tutorial,
     Pause,
     Win,
     Lose,
+    Credits
   ],
   plugins: {
     global: [
