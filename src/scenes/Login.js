@@ -12,11 +12,18 @@ export default class Login extends Phaser.Scene {
       .text(1920 / 2, 100, getPhrase("Ingresar por:"), {
         fontFamily: "Times New Roman",
         fontSize: 48,
+        color: "#7D080E",
+        backgroundColor: "11111"
+
       })
-      .setOrigin(0.5);
+      .setOrigin(0.5)
+      .setDepth(1);
+
+      this.background = this.add.image(1920/2, 1080/2, "image-for-languages");
+      this.background.setDepth(0);
 
     this.add
-      .image(1920 * 0.75, 500, "anonymous-logo")
+      .image(1920 * 0.33, 300, "anonymous-logo")
       .setScale(0.5)
       .setInteractive()
       .on("pointerdown", () => {
@@ -32,7 +39,7 @@ export default class Login extends Phaser.Scene {
 
     // agregar un texto centrado "Ingresar con Google" que al hacer clic me levante un popup js para ingresar los datos
     this.add
-      .image(1920 * 0.25, 500, "google-logo")
+      .image(1920 *0.33, 700, "google-logo")
       .setInteractive()
       .on("pointerdown", () => {
         this.firebase
@@ -47,7 +54,7 @@ export default class Login extends Phaser.Scene {
 
     // agregar un texto "Ingresar con GitHub" que al hacer clic me levante un popup js para ingresar los datos
     this.add
-      .image(1920 / 2, 500, "github-logo")
+      .image(1920 * (1 - 0.33), 500, "github-logo")
       .setOrigin(0.5)
       .setInteractive()
       .on("pointerdown", () => {

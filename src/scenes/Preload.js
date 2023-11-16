@@ -58,6 +58,7 @@ export default class Preload extends Phaser.Scene {
       "./assets/sprites/portugueseButton.png"
     );
     this.load.image("english-button", "./assets/sprites/englishButton.webp");
+    this.load.image("image-for-languages", "./assets/sprites/imageForLanguages.png");
     this.load.image("game-over", "./assets/sprites/gameOver.png");
     this.load.audio("main-menu-song", "./assets/audio/mainMenuSong.mp3");
     this.load.audio("game-song", "./assets/audio/gameSong.mp3");
@@ -72,6 +73,8 @@ export default class Preload extends Phaser.Scene {
     this.load.audio ("PointerdownFX", "./assets/audio/PointerdownFX.mp3")
     this.load.tilemapTiledJSON("level1", "./assets/tileMap/Level1.json");
     this.load.tilemapTiledJSON("lobby-tile", "./assets/tileMap/lobby.json");
+    this.load.tilemapTiledJSON("level2", "./assets/tileMap/Level2.json");
+    this.load.tilemapTiledJSON("level3", "./assets/tileMap/Level3.json");
   }
 
   init(language) {
@@ -80,6 +83,8 @@ export default class Preload extends Phaser.Scene {
 
   create() {
     const startGame = () => this.scene.start("login");
+
+    this.background = this.add.image(1920/2, 1080/2, "image-for-languages");
 
     this.loadingText = this.add.text(1920 * 0.8, 1080 * 0.9, "Loading", {
       font: "46px Arial",
@@ -101,7 +106,7 @@ export default class Preload extends Phaser.Scene {
     this.loadingText.text = "Loading.";
 
     this.spanishButton = this.add
-      .image(1920 * 0.25, 500, "spanish-button")
+      .image(1920 * 0.33, 300, "spanish-button")
       .setInteractive();
 
     this.spanishButton.on("pointerdown", () => {
@@ -114,7 +119,7 @@ export default class Preload extends Phaser.Scene {
     });
 
     this.portugueseButton = this.add
-      .image(1920 / 2, 500, "portuguese-button")
+      .image(1920 *0.33, 700, "portuguese-button")
       .setInteractive();
 
     this.portugueseButton.on("pointerdown", () => {
@@ -127,7 +132,7 @@ export default class Preload extends Phaser.Scene {
     });
 
     this.englishButton = this.add
-      .image(1920 * 0.75, 500, "english-button")
+      .image(1920 * (1 - 0.33), 500, "english-button")
       .setInteractive()
       .setScale(0.4);
 

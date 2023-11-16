@@ -84,7 +84,13 @@ export default class Game extends Phaser.Scene {
   }
 
   initializeLevel() {
+    if (this.level === 1) {	
     this.level1Tile = this.make.tilemap({ key: "level1" });
+    } else if (this.level === 2) {
+      this.level1Tile = this.make.tilemap({ key: "level2" });
+    }else if (this.level === 3) {
+      this.level1Tile = this.make.tilemap({ key: "level3" })
+    }
     this.objectsLayer = this.level1Tile.getObjectLayer("objects");
     this.atlas = this.level1Tile.addTilesetImage("Atlas", "Atlas");
     this.floorLayer = this.level1Tile.createLayer("Floor", this.atlas, 0, 0);
