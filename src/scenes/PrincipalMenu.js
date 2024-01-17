@@ -127,47 +127,4 @@ export default class PrincipalMenu extends Phaser.Scene {
     // this.video.setLoop(true);
     this.audio = this.sound.add("main-cinematic-song");
     this.audio.play();
-    this.scene.pause();
-  
-    // Reproduce el video
-    this.video.play();
-    this.video.setLoop(true);
-    this.video.setDepth(4);
 
-    setTimeout(() => {
-      this.fadeOutCinematic();
-    }, 5000); // 
-  
-    // Agregar recuadro de texto negro para subtítulos
-    this.subtitleText = this.add.text(1920 *0.075, 1080 *0.81, 'Te tengo una tarea que no es fácil. Tendrás que ir a las cuevas de heian a encontrar una reliquia. Mucha suerte', {
-      font: '34px Arial',
-      color: '#ffffff',
-      backgroundColor: '#000000',
-      align: 'center',
-
-      
-    }).setOrigin(0, 0).setDepth(5).setAlpha(1); // Ajustar posición y propiedades del texto
-
-  
-    // Establece un evento para cuando el video termine
-    this.video.on('complete', () => {
-      this.audio.stop();
-      this.audio.destroy();
-      this.scene.resume();
-      // Cuando el video termina, ejecuta la función fadeOutCinematic
-      this.fadeOutCinematic();
-    }, this);
-  }
-  
-  fadeOutCinematic() {
-    this.scene.start("lobby", {
-      level: this.level
-    });
-    this.audio.stop();
-    this.audio.destroy();
-  }
-  
-  musicTransfer(data) {
-    this.mainMenuSong = data.mainMenuSong;
-  }
-}  
