@@ -78,13 +78,55 @@ export default class Game extends Phaser.Scene {
       this
     );
 
+    this.arrow = this.add.image(0, 0, 'arrow'); // Reemplaza 'arrow' con la clave de tu sprite de flecha roja
+    this.arrow.setDepth(5);
+    this.arrow.setScale(0.1); // Asegúrate de que la flecha esté en una capa superior
+
+    this.blueArrow = this.add.image(0, 0, 'blue-arrow'); // Reemplaza 'blue-arrow' con la clave de tu sprite de flecha azul
+    this.blueArrow.setDepth(5); // Asegúrate de que la flecha esté en una capa superior
+    this.blueArrow.setVisible(false);
+    this.blueArrow.setScale(0.1); // Inicialmente, la flecha no es visible
+
+
     events.on("music", this.musicTransfer, this);
 
     this.keyEsc = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
+
+    const nearestDynamite = this.findNearestDynamite();
+
+    if (nearestDynamite) {
+      this.showArrowToDynamite(nearestDynamite);
+    }
+  }
+  
+  showArrowToDynamite(dynamite) {
+    const characterPosition = {
+      x: this.character.x,
+      y: this.character.y
+    };
+    const dynamitePosition = {
+      x: dynamite.x,
+      y: dynamite.y
+    };
+  
+    const angle = Phaser.Math.Angle.BetweenPoints(characterPosition, dynamitePosition);
+  
+    this.arrow.setRotation(angle);  
+    // Coloca la flecha en la posición del personaje con un desplazamiento para que apunte hacia la dinamita
+    const offsetX = Math.cos(angle) * 50; // Ajusta el desplazamiento horizontal
+    const offsetY = Math.sin(angle) * 50; // Ajusta el desplazamiento vertical
+  
+    this.arrow.setPosition(this.character.x + offsetX, this.character.y + offsetY);
   }
 
   initializeLevel() {
+    if (this.level === 1) {	
     this.level1Tile = this.make.tilemap({ key: "level1" });
+    } else if (this.level === 2) {
+      this.level1Tile = this.make.tilemap({ key: "level2" });
+    }else if (this.level === 3) {
+      this.level1Tile = this.make.tilemap({ key: "level3" })
+    }
     this.objectsLayer = this.level1Tile.getObjectLayer("objects");
     this.atlas = this.level1Tile.addTilesetImage("Atlas", "Atlas");
     this.floorLayer = this.level1Tile.createLayer("Floor", this.atlas, 0, 0);
@@ -106,13 +148,10 @@ export default class Game extends Phaser.Scene {
   }
 
   createCharacter() {
-
     this.spawnPoint = this.level1Tile.findObject(
       "objects",
       (obj) => obj.name === "principalCharacter"
     );
-
-      // Nivel 1: Flash activado
       this.character = new PrincipalCharacter(
         this,
         this.spawnPoint.x,
@@ -169,6 +208,12 @@ export default class Game extends Phaser.Scene {
 
   update(time, delta) {
 
+    const nearestDynamite = this.findNearestDynamite();
+
+  if (nearestDynamite) {
+    this.showArrowToDynamite(nearestDynamite);
+  }
+
     this.fadingOverlay.setPosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
       this.character.update();
 
@@ -204,6 +249,14 @@ export default class Game extends Phaser.Scene {
         dynamiteCuantity: this.dynamiteCuantity,
         timeElapsed: this.timeElapsed,
       });
+
+      const nearestEnemy = this.findNearestEnemyWithinDistance(200); // Ajusta la distancia máxima a la que quieres que se active la flecha
+
+  if (nearestEnemy) {
+    this.showBlueArrowToEnemy(nearestEnemy);
+  } else {
+    this.blueArrow.setVisible(false); // Oculta la flecha si no hay enemigos cercanos
+  }
   }
 
   hitDynamite(character, dynamite) {
@@ -218,25 +271,20 @@ export default class Game extends Phaser.Scene {
 
   damage() {
     this.scene.pause();
-
     // Obtén las coordenadas actuales de la cámara
     const cameraX = this.cameras.main.scrollX;
     const cameraY = this.cameras.main.scrollY;
-
     // Calcula las coordenadas del video en relación con la cámara
     this.videoX = cameraX + 1980 / 2;
     this.videoY = cameraY + 1080 / 2;
-
     this.video = this.add.video(this.videoX, this.videoY, "jumpscare");
     this.gameSong.stop();
     this.gameSong.destroy();
     this.gameSong2.stop();
     this.gameSong2.destroy();;
-
     // Reproduce el video
     this.video.play();
     this.video.setDepth(4);
-
     this.video.on('complete', () => {
         this.level -= 1;
         this.scene.start("lose", {
@@ -256,10 +304,99 @@ export default class Game extends Phaser.Scene {
       day: new Date(),
       timeElapsed: this.timeElapsed,
     });
-
   }
 
   musicTransfer(data) {
     this.gameSong = data.gameSong;
+  }
+
+  findNearestDynamite() {
+    const characterPosition = {
+      x: this.character.x,
+      y: this.character.y
+    };
+  
+    let nearestDynamite = null;
+    let nearestDistance = Infinity;
+  
+    this.dynamite.children.each((dynamite) => {
+      if (dynamite.active) {
+        const dynamitePosition = {
+          x: dynamite.x,
+          y: dynamite.y
+        };
+        const distance = Phaser.Math.Distance.BetweenPoints(
+          characterPosition,
+          dynamitePosition
+        );
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearestDynamite = dynamite;
+        }
+      }
+    }); 
+    return nearestDynamite;
+  }
+
+  findNearestEnemyWithinDistance(maxDistance) {
+    const characterPosition = {
+      x: this.character.x,
+      y: this.character.y
+    };
+  
+    let nearestEnemy = null;
+    let nearestDistance = Infinity;
+  
+    this.enemyGroup.getChildren().forEach((enemy) => {
+      const enemyPosition = {
+        x: enemy.x,
+        y: enemy.y
+      };
+  
+      const distance = Phaser.Math.Distance.BetweenPoints(
+        characterPosition,
+        enemyPosition
+      );
+  
+      if (distance < maxDistance && distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestEnemy = enemy;
+      }
+    });
+  
+    return nearestEnemy;
+  }
+
+  showBlueArrowToEnemy(enemy) {
+    const characterPosition = {
+      x: this.character.x,
+      y: this.character.y
+    };
+    const enemyPosition = {
+      x: enemy.x,
+      y: enemy.y
+    };
+  
+    const angle = Phaser.Math.Angle.BetweenPoints(characterPosition, enemyPosition);
+  
+    this.blueArrow.setRotation(angle);
+  
+    // Coloca la flecha azul en la posición del personaje con un desplazamiento
+    // para que apunte hacia el enemigo cercano
+    const offsetX = Math.cos(angle) * 50; // Ajusta el desplazamiento horizontal
+    const offsetY = Math.sin(angle) * 50; // Ajusta el desplazamiento vertical
+  
+    this.blueArrow.setPosition(this.character.x + offsetX, this.character.y + offsetY);
+  
+    // Activa o desactiva el parpadeo basado en la distancia del enemigo
+    const distance = Phaser.Math.Distance.BetweenPoints(characterPosition, enemyPosition);
+    const shouldBlink = distance <= 5000; // Define la distancia para que la flecha parpadee
+  
+    if (shouldBlink) {
+      // Alternar la visibilidad de la flecha azul para hacerla parpadear
+      this.blueArrow.setVisible(!this.blueArrow.visible);
+    } else {
+      this.blueArrow.setVisible(true); // Asegúrate de que la flecha esté visible si el enemigo está fuera de la distancia de parpadeo
+    }
   }
 }

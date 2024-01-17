@@ -9,7 +9,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.player = player;
         this.speed = 300 + (level - 1) * 100;
         this.followDistance = followDistance;
-        this.randomMoveDuration = 2000;
+        this.randomMoveDuration = 15000;
         this.randomMoveTimer = 0;
         this.isMovingRandomly = false;
         this.isFlashed = false;
@@ -20,7 +20,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
         // Nueva variable y temporizador para el aturdimiento
         this.stunDuration = 2000; // Duración del aturdimiento en milisegundos
-        this.stunTimer = 0;
+
         const hitboxHeight = this.height * 0.3; // Puedes ajustar este valor según tus necesidades
         const hitboxWidth = this.width * 0.1; // Puedes ajustar este valor según tus necesidades
         
@@ -34,9 +34,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
             const distance = Phaser.Math.Distance.Between(this.x, this.y, flashData.x, flashData.y);
             if (distance <= this.flashRange) {
                 this.isFlashed = true;
-                this.fleeFrom(flashData);
-
-                // Iniciar el temporizador de aturdimiento
+              // Iniciar el temporizador de aturdimiento
                 this.stunTimer = 0;
             }
         });
@@ -44,10 +42,13 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     update(time, delta) {
         if (this.isFlashed) {
-            this.stunTimer += delta;
+            this.stunTimer += 10;
             if (this.stunTimer >= this.stunDuration) {
                 // Desactivar el aturdimiento cuando el temporizador ha transcurrido
-                this.isFlashed = false;
+            this.isFlashed = false;
+            this.isMovingRandomly = false;
+            this.attack();
+
             } else {
                 const angle = Phaser.Math.Angle.Between(this.x, this.y, this.player.x, this.player.y);
                 const velocity = new Phaser.Math.Vector2();
@@ -92,19 +93,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.playAnimationByVelocity(randomVelocity);
     }
 
-    fleeFrom(flashData) {
-        if (!this.body) {
-             return;
-        }
-        const angle = Phaser.Math.Angle.Between(this.x, this.y, flashData.x, flashData.y);
-        const velocity = new Phaser.Math.Vector2();
-        velocity.setToPolar(angle, this.speed);
-        this.setVelocity(-velocity.x, -velocity.y);
-        this.isMovingRandomly = false;
-        this.randomMoveTimer = 0;
-        this.playAnimationByVelocity(velocity);
-    }
-
     playAnimationByVelocity(velocity) {
       this.angle = Phaser.Math.Angle.Between(0, 0, velocity.x, velocity.y);
 
@@ -125,6 +113,33 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
             } else {
                 this.play("enemy-up", true);
             }
+    }
+
+    attack(delta) {
+        const distance = Phaser.Math.Distance.Between(this.x, this.y, this.player.x, this.player.y);
+        if (distance <= this.followDistance) {
+            this.isMovingRandomly = false;
+            const angle = Phaser.Math.Angle.Between(this.x, this.y, this.player.x, this.player.y);
+            const velocity = new Phaser.Math.Vector2();
+            velocity.setToPolar(angle, this.speed);
+            this.setVelocity(velocity.x, velocity.y);
+
+            // Seleccionar y reproducir la animación según la dirección
+            this.playAnimationByVelocity(velocity);
+        } else {
+            if (!this.isMovingRandomly) {
+                this.isMovingRandomly = true;
+                this.changeRandomDirection();
+            }
+            // this.enemyFollowSong.stop({loop: false});
+            this.randomMoveTimer += delta;
+            if (this.randomMoveTimer >= this.randomMoveDuration) {
+                this.isMovingRandomly = false;
+                this.setVelocity(0, 0);
+                this.randomMoveTimer = 0;
+            }
+        }
+
     }
 
 }

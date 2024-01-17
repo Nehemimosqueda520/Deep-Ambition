@@ -16,10 +16,12 @@ export default class Lobby extends Phaser.Scene {
     this.level = data.level || 0;
     this.health = data.health || 3;
     this.dynamiteCuantity = 0;
-    this.levelsPased = data.levelsPased || 0;
+    this.levelsPased = data.levelsPased || this.level;
   }
 
   create() {
+
+    // console.log (this.levelsPased);
 
     this.fadingOverlay = this.add
     .rectangle(

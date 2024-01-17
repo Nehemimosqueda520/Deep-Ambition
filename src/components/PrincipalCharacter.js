@@ -44,6 +44,7 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
         this.offsetY = this.height - this.hitboxHeight;
         this.body.setSize(this.hitboxWidth, this.hitboxHeight);
         this.body.setOffset(this.offsetX, this.offsetY);
+        
 }
 
 
@@ -116,7 +117,7 @@ update() {
             // Deshabilitar el uso del destello durante 20 segundos
             this.canUseFlash = false;
             
-            this.scene.time.delayedCall(10000, () => {
+            this.scene.time.delayedCall(4000, () => {
                 this.canUseFlash = true; // Habilitar nuevamente el uso del destello
             });
     
@@ -126,31 +127,5 @@ update() {
                 this.darkness.setVisible(true);
             });
         }
-
-        if (this.cursor.space.isDown) {
-            this.applyBoost(); // Llama a la función de impulso al presionar la tecla espaciadora
-        }   
     }
-
-    applyBoost() {
-        if (this.canUseFlash && !this.isBoosting) {
-          // Activa el impulso
-          this.isBoosting = true;
-          this.canUseFlash = false;
-      
-          // Establece la velocidad durante el impulso
-          this.setVelocityX(this.velocity * 2); // Aumenta la velocidad (ajusta según tus necesidades)
-      
-          // Configura un temporizador para desactivar el impulso después de la duración especificada
-          this.scene.time.delayedCall(this.boostDuration, () => {
-            this.isBoosting = false;
-            this.setVelocityX(this.velocity); // Restablece la velocidad normal
-          });
-      
-          // Configura un temporizador para habilitar el uso del impulso nuevamente después del tiempo de espera
-          this.scene.time.delayedCall(this.boostCooldown, () => {
-            this.canUseFlash = true; // Habilita nuevamente el uso del impulso
-          });
-        }
-      }
 }    

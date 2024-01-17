@@ -30,6 +30,8 @@ export default class Lose extends Phaser.Scene {
       this.fadingOverlay.setAlpha(0)
       .setDepth(4);
 
+
+
         this.pointerSound = this.sound.add("pointerOver");
         this.pointerdownSound = this.sound.add("PointerdownFX");
 
@@ -71,6 +73,7 @@ export default class Lose extends Phaser.Scene {
                     this.scene.start('lobby', {
                         level: this.level,
                         health: this.health,
+                        levelsPased: this.levelsPased
                     });
                 },
               });
