@@ -45,7 +45,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
     update(time, delta) {
         if (this.isFlashed) {
             this.stunTimer += 100;
-            console.log(this.stunTimer);
             if (this.stunTimer >= this.stunDuration) {
                 // Desactivar el aturdimiento cuando el temporizador ha transcurrido
                 this.isFlashed = false;
