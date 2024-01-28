@@ -116,7 +116,7 @@ update() {
             // Deshabilitar el uso del destello durante 20 segundos
             this.canUseFlash = false;
             
-            this.scene.time.delayedCall(10000, () => {
+            this.scene.time.delayedCall(5000, () => {
                 this.canUseFlash = true; // Habilitar nuevamente el uso del destello
             });
     
