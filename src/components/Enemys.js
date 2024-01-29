@@ -19,7 +19,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
 
         // Nueva variable y temporizador para el aturdimiento
-        this.stunDuration = 2000; // Duración del aturdimiento en milisegundos
+        this.stunDuration = 50000; // Duración del aturdimiento en milisegundos
         this.stunTimer = 0;
         const hitboxHeight = this.height * 0.3; // Puedes ajustar este valor según tus necesidades
         const hitboxWidth = this.width * 0.1; // Puedes ajustar este valor según tus necesidades
@@ -44,7 +44,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
 
     update(time, delta) {
         if (this.isFlashed) {
-            this.stunTimer += delta;
+            this.stunTimer += 100;
             if (this.stunTimer >= this.stunDuration) {
                 // Desactivar el aturdimiento cuando el temporizador ha transcurrido
                 this.isFlashed = false;

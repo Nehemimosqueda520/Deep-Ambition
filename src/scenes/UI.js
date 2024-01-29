@@ -36,11 +36,20 @@ export default class UI extends Phaser.Scene {
     );
     this.levelText.setOrigin(0.5);
 
+    this.enemyText = this.add.text(this.cameras.main.width / 2,
+     1080* 0.8,
+      "Presiona la barra espaciadora para aturdir enemigos", {
+      fontFamily: this.font,
+      fontSize: "48px",
+      color: "red", // Cambia el color del fondo a rojo
+    } );
+    this.enemyText.setOrigin(0.5);
+
     // Ajusta la duración durante la cual el letrero de nivel estará en pantalla
     this.tweens.add({
-      targets: this.levelText,
+      targets: this.levelText && this.enemyText, 
       alpha: 0, // Establece la opacidad del texto a 0 (totalmente transparente)
-      duration: 2000, // Duración de la animación en milisegundos
+      duration: 4000, // Duración de la animación en milisegundos
       ease: "Linear", // Opcional: función de interpolación
       onComplete: () => {
         this.levelText.destroy(); // Elimina el texto después de desvanecerse
