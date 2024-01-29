@@ -7,11 +7,6 @@ export default class Settings extends Phaser.Scene {
   constructor() {
     super("settings");
 
-    // Definir valores para las variables de tamaño y posición del pop-up
-    this.popupWidth = 600;
-    this.popupHeight = 400;
-    this.popupX = (1920 - this.popupWidth) / 2;
-    this.popupY = (1080 - this.popupHeight) / 2;
   }
 
   init(data) {
@@ -24,30 +19,16 @@ export default class Settings extends Phaser.Scene {
   create() {
     // Fondo para el pop-up de configuración
     this.add
-      .rectangle(
-        this.popupX,
-        this.popupY,
-        this.popupWidth,
-        this.popupHeight,
-        0x000000
-      )
-      .setOrigin(0);
-
-    // Contorno blanco alrededor del pop-up
-    this.popupOutline = this.add.graphics();
-    this.popupOutline.lineStyle(2, 0xffffff);
-    this.popupOutline.strokeRect(
-      this.popupX,
-      this.popupY,
-      this.popupWidth,
-      this.popupHeight
-    );
-
+      .image(1920/2, 1080/2, "image-for-languages");
+      
+      this.color = "#680005";
+      this.fontFamily = "Times new roman";
     // Título del pop-up de configuración
     this.add
-      .text(1920 / 2, this.popupY + 20, getPhrase("Configuración"), {
-        fontSize: "32px",
-        color: "#fff",
+      .text(1920 * 0.25, 1080 * 0.25, getPhrase("Configuración"), {
+        fontFamily: this.fontFamily,
+        fontSize: "50px",
+        color: this.color,
         align: "center",
       })
       .setOrigin(0.5);
@@ -55,12 +36,13 @@ export default class Settings extends Phaser.Scene {
     // Botón para volver al menú principal
     this.backButton = this.add
       .text(
-        this.popupX + 50,
-        this.popupY + this.popupHeight - 50,
+        1920 * 0.75,
+        1080 * 0.8,
         getPhrase("Volver"),
         {
-          fontSize: "20px",
-          color: "#fff",
+          fontFamily: this.fontFamily,
+          fontSize: "40px",
+          color: this.color,
         }
       )
       .setInteractive();
@@ -86,12 +68,13 @@ export default class Settings extends Phaser.Scene {
 
     // Agregar etiquetas para los controles deslizantes
     this.volumeText = this.add.text(
-      this.popupX + 50,
-      this.popupY + 70,
-      `Volumen             ${this.visibleVolume}%`,
+      1920 * 0.25,
+      1080 * 0.33,
+      `Volumen                                 ${this.visibleVolume}%`,
       {
+        fontFamily: this.fontFamily,
         fontSize: "20px",
-        color: "#fff",
+        color: this.color,
       }
     );
 
@@ -108,11 +91,11 @@ export default class Settings extends Phaser.Scene {
       this.volume -= 0.1;
       this.visibleVolume -= 10;
       this.mainMenuSong.setVolume(this.volume);
-      this.volumeText.setText(`Volumen             ${this.visibleVolume}%`);
+      this.volumeText.setText(`Volumen                                 ${this.visibleVolume}%`);
     } else if (this.cursor.right.isDown && this.volume < 1) {
       this.volume += 0.1;
       this.visibleVolume += 10;
-      this.volumeText.setText(`Volumen             ${this.visibleVolume}%`);
+      this.volumeText.setText(`Volumen                                 ${this.visibleVolume}%`);
       this.mainMenuSong.setVolume(this.volume);
     }
   }
