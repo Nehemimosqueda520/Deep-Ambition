@@ -21,6 +21,7 @@ export default class Preload extends Phaser.Scene {
       frameHeight: 250,
     });
     this.load.image("flash-effect", "./assets/particles/flashEffect.png");
+    this.load.image("arrow_enemy", "./assets/particles/arrow_enemy.png");
     this.load.image("Atlas", "./assets/sprites/Atlas.png");
     this.load.spritesheet("door", "./assets/sprites/door.png", {
       frameWidth: 580 / 2,

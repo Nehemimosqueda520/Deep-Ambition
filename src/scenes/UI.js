@@ -38,7 +38,7 @@ export default class UI extends Phaser.Scene {
 
     this.enemyText = this.add.text(this.cameras.main.width / 2,
      1080* 0.8,
-      "Presiona la barra espaciadora para aturdir enemigos", {
+      getPhrase("Presiona la barra espaciadora para aturdir enemigos"), {
       fontFamily: this.font,
       fontSize: "48px",
       color: "red", // Cambia el color del fondo a rojo
