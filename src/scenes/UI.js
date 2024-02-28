@@ -23,6 +23,8 @@ export default class UI extends Phaser.Scene {
       color: "#ffffff",
     });
 
+    this.lantern = this.add.image(1920 * 0.05, 43, "lantern");
+
     this.levelText = this.add.text(
       this.cameras.main.width / 2,
       this.cameras.main.height / 2,
@@ -38,7 +40,7 @@ export default class UI extends Phaser.Scene {
 
     this.enemyText = this.add.text(this.cameras.main.width / 2,
      1080* 0.8,
-      "Presiona la barra espaciadora para aturdir enemigos", {
+      getPhrase("Presiona la barra espaciadora para aturdir enemigos"), {
       fontFamily: this.font,
       fontSize: "48px",
       color: "red", // Cambia el color del fondo a rojo
@@ -58,6 +60,7 @@ export default class UI extends Phaser.Scene {
 
     this.dynamite = this.add.image(1750, 43, "dynamite");
     events.on("actualizarDatos", this.updates, this);
+    events.on('canUseFlashChanged', this.updateCanUseFlash, this);
   }
 
   updates(data) {
@@ -66,5 +69,16 @@ export default class UI extends Phaser.Scene {
     this.dynamiteCuantity = data.dynamiteCuantity;
 
     this.dynamiteText.setText(`${this.dynamiteCuantity}`);
+
+  }
+
+  updateCanUseFlash(data) {
+    console.log ("se esta transfiriendo");
+    this.canUseFlash = data.canUseFlash; // Actualiza la variable
+    if (this.canUseFlash === true) {
+      this.lantern.setTexture("lanternOff");
+    } else {
+      this.lantern.setTexture("lantern");
+    }
   }
 }

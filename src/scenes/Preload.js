@@ -15,12 +15,19 @@ export default class Preload extends Phaser.Scene {
       frameWidth: 120,
       frameHeight: 212,
     });
+
+    this.load.spritesheet("dynamiteArrow", "./assets/sprites/dynamiteArrow.png", {
+      frameWidth: 270,
+      frameHeight: 329,
+    });
     this.load.image("dynamite", "./assets/sprites/dynamite.png");
     this.load.spritesheet("enemy", "./assets/sprites/enemy.png", {
       frameWidth: 180,
       frameHeight: 250,
     });
     this.load.image("flash-effect", "./assets/particles/flashEffect.png");
+    this.load.image("arrow_enemy", "./assets/particles/arrow_enemy.png");
+    this.load.image("flash", "./assets/particles/flash.png");
     this.load.image("Atlas", "./assets/sprites/Atlas.png");
     this.load.spritesheet("door", "./assets/sprites/door.png", {
       frameWidth: 580 / 2,
@@ -31,6 +38,8 @@ export default class Preload extends Phaser.Scene {
     this.load.image("google-logo", "./assets/sprites/googleLogo.png");
     this.load.image ("wasd", "./assets/sprites/wasd.png");
     this.load.image ("space", "./assets/sprites/space.png");
+    this.load.image ("lantern", "./assets/sprites/lintern_iu.png");
+    this.load.image ("lanternOff", "./assets/sprites/linternOff_iu.png");
     this.load.video(
       "main-menu-background",
       "./assets/sprites/mainMenuBackground.mp4"
@@ -70,6 +79,7 @@ export default class Preload extends Phaser.Scene {
     this.load.audio ("main-cinematic-song", "./assets/audio/mainCinematicSong.mp3");
     this.load.audio ("steps", "./assets/audio/steps.mp3");
     this.load.audio ("enemyFollow", "./assets/audio/enemyFollow.mp3");
+    this.load.audio ("flashSound", "./assets/audio/flashSound.mp3");
     this.load.audio ("PointerdownFX", "./assets/audio/PointerdownFX.mp3")
     this.load.tilemapTiledJSON("level1", "./assets/tileMap/Level1.json");
     this.load.tilemapTiledJSON("lobby-tile", "./assets/tileMap/lobby.json");
