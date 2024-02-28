@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import events from "../scenes/EventCenter";
 
 export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
     
@@ -10,12 +11,13 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
 
     canUseFlash;
 
-    constructor(scene, x, y, texture, velocity, canUseFlash ) {
+    constructor(scene, x, y, texture, velocity, canUseFlash, isDark) {
         super(scene, x, y, texture);
 
         this.setTexture("principal-character");
         
         this.steps = scene.sound.add("steps");
+        this.flashSound = scene.sound.add("flashSound").setVolume(0.5);
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -33,9 +35,13 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
         this.flashEffect.setDepth(1); // Asegurarse de que esté por encima del personaje
         this.flashEffect.setVisible(false); // Inicialmente oculto
 
-        this.darkness = scene.add.image(x, y, "darkness").setDepth(4);
+        this.flash = scene.add.image(x, y, "flash");
+        this.flash.setDepth(1); // Asegurarse de que esté por encima del personaje
+        this.flash.setVisible(false);
 
-        this.canUseFlash = canUseFlash || true;
+        this.darkness = scene.add.image(x, y, "darkness").setDepth(4).setVisible(isDark);
+
+        this.canUseFlash = canUseFlash;
 
 
         this.hitboxHeight = this.height * 0.4;
@@ -106,51 +112,32 @@ update() {
 
 
         if (this.cursor.space.isDown && this.canUseFlash) {
+            this.flashSound.play();
             // Mostrar el destello y configurar su posición
             this.flashEffect.setVisible(true);
             this.flashEffect.setPosition(this.x, this.y);
+            this.flash.setVisible(true);
+            this.flash.setPosition(this.x, this.y);
             this.darkness.setVisible(false);
 
             this.scene.events.emit('flashActivated', { x: this.x, y: this.y });
-    
-            // Deshabilitar el uso del destello durante 20 segundos
+            events.emit('canUseFlashChanged', {canUseFlash: this.canUseFlash, }); 
             this.canUseFlash = false;
             
             this.scene.time.delayedCall(5000, () => {
-                this.canUseFlash = true; // Habilitar nuevamente el uso del destello
+            events.emit('canUseFlashChanged', {canUseFlash: this.canUseFlash}); 
+                this.canUseFlash = true;
+               // Habilitar nuevamente el uso del destello
             });
     
             // Establecer un temporizador para ocultar el destello después de un breve período
             this.scene.time.delayedCall(100, () => {
                 this.flashEffect.setVisible(false);
+                this.flash.setVisible(false);
                 this.darkness.setVisible(true);
             });
         }
-
-        if (this.cursor.space.isDown) {
-            this.applyBoost(); // Llama a la función de impulso al presionar la tecla espaciadora
-        }   
+ 
     }
 
-    applyBoost() {
-        if (this.canUseFlash && !this.isBoosting) {
-          // Activa el impulso
-          this.isBoosting = true;
-          this.canUseFlash = false;
-      
-          // Establece la velocidad durante el impulso
-          this.setVelocityX(this.velocity * 2); // Aumenta la velocidad (ajusta según tus necesidades)
-      
-          // Configura un temporizador para desactivar el impulso después de la duración especificada
-          this.scene.time.delayedCall(this.boostDuration, () => {
-            this.isBoosting = false;
-            this.setVelocityX(this.velocity); // Restablece la velocidad normal
-          });
-      
-          // Configura un temporizador para habilitar el uso del impulso nuevamente después del tiempo de espera
-          this.scene.time.delayedCall(this.boostCooldown, () => {
-            this.canUseFlash = true; // Habilita nuevamente el uso del impulso
-          });
-        }
-      }
 }    

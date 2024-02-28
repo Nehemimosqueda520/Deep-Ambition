@@ -138,14 +138,18 @@ export default class PrincipalMenu extends Phaser.Scene {
     }, 5000); // 
   
     // Agregar recuadro de texto negro para subtítulos
-    this.subtitleText = this.add.text(1920 *0.075, 1080 *0.81, 'Te tengo una tarea que no es fácil. Tendrás que ir a las cuevas de heian a encontrar una reliquia. Mucha suerte', {
-      font: '34px Arial',
+    this.subtitleText = this.add.text(1920 *0.18, 1080 *0.78, getPhrase('Te tengo una tarea que no es fácil. \n Tendrás que ir a las cuevas de heian a encontrar una reliquia. \n ¡Mucha suerte!'), {
+      font: '45px Arial',
       color: '#ffffff',
       backgroundColor: '#000000',
       align: 'center',
 
       
     }).setOrigin(0, 0).setDepth(5).setAlpha(1); // Ajustar posición y propiedades del texto
+
+
+    this.playText.setVisible(false);
+    this.settingsText.setVisible(false);
 
   
     // Establece un evento para cuando el video termine

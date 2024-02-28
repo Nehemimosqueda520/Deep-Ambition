@@ -26,6 +26,8 @@ export default class Game extends Phaser.Scene {
       level: this.level,
     });
 
+
+
     this.fadingOverlay = this.add
     .rectangle(
       0,
@@ -62,6 +64,9 @@ export default class Game extends Phaser.Scene {
     this.createEnemy();
     this.physics.add.collider(this.character, this.wallCollisionLayer);
     this.physics.add.collider(this.enemyGroup, this.wallCollisionLayer);
+
+    this.createArrow();
+
 
     this.physics.add.overlap(
       this.character,
@@ -124,7 +129,9 @@ export default class Game extends Phaser.Scene {
         this.spawnPoint.x,
         this.spawnPoint.y,
         "principal-character",
-        this.velocity
+        this.velocity,
+        true,
+        true
       );
     this.character.setDepth(3);
     this.add.existing(this.character);
@@ -191,12 +198,16 @@ export default class Game extends Phaser.Scene {
         });
       }
 
+      this.updateArrow();
+
+
       if (this.dynamiteCuantity <= 0) {
         this.gameSong.stop();
         this.gameSong.destroy();
         this.gameSong2.stop();
         this.gameSong2.destroy();
         this.saveGameData();
+        this.arrow.setVisible(false);
         this.scene.start("win", {
           level: this.level,
           levelsPased: this.levelsPased 
@@ -220,9 +231,11 @@ export default class Game extends Phaser.Scene {
       level: this.level,
       dynamiteCuantity: this.dynamiteCuantity,
     });
+
   }
 
   damage() {
+    this.arrow.setVisible(false);
     this.scene.pause();
 
     // Obtén las coordenadas actuales de la cámara
@@ -255,6 +268,37 @@ export default class Game extends Phaser.Scene {
         });
     }, this);
 }
+
+createArrow() {
+  this.arrow = this.add.sprite(this.character.x, this.character.y, 'arrow_enemy').setDepth(9);
+  this.arrow.setOrigin(0.5, 0.5); // Centrar la flecha 
+}
+
+
+
+updateArrow() {
+  // Encuentra el enemigo más cercano
+  let closestEnemy = null;
+  let closestDistance = Infinity;
+  this.enemyGroup.getChildren().forEach((enemy) => {
+      const distance = Phaser.Math.Distance.Between(this.character.x, this.character.y, enemy.x, enemy.y);
+      if (distance < closestDistance) {
+          closestDistance = distance;
+          closestEnemy = enemy;
+      }
+  });
+
+  // Si hay un enemigo cercano, ajusta la rotación de la flecha
+  if (closestEnemy) {
+    const angle = Phaser.Math.Angle.Between(this.character.x, this.character.y, closestEnemy.x, closestEnemy.y);
+    const radius = 200; // Radio de la circunferencia
+    const x = this.character.x + radius * Math.cos(angle);
+    const y = this.character.y + radius * Math.sin(angle);
+    this.arrow.setPosition(x, y);
+    this.arrow.rotation = angle;
+}
+}
+
 
   saveGameData() {
     this.firebase.saveGameData(this.user.uid, {

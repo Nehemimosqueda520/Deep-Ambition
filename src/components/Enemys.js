@@ -7,7 +7,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         scene.physics.add.existing(this);
 
         this.player = player;
-        this.speed = 300 + (level - 1) * 100;
+        this.speed = 300 + (level - 1) * 50;
         this.followDistance = followDistance;
         this.randomMoveDuration = 2000;
         this.randomMoveTimer = 0;
