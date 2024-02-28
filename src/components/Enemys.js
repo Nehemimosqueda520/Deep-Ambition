@@ -18,13 +18,11 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
         this.enemyFollowSong = scene.sound.add("enemyFollow");
 
 
-        // Nueva variable y temporizador para el aturdimiento
-        this.stunDuration = 50000; // Duración del aturdimiento en milisegundos
+        this.stunDuration = 50000; 
         this.stunTimer = 0;
-        const hitboxHeight = this.height * 0.3; // Puedes ajustar este valor según tus necesidades
-        const hitboxWidth = this.width * 0.1; // Puedes ajustar este valor según tus necesidades
+        const hitboxHeight = this.height * 0.3; 
+        const hitboxWidth = this.width * 0.1; 
         
-        // Calcular el offset para centrar la hitbox horizontalmente
         const offsetX = (this.width - hitboxWidth) / 2;
         
         this.body.setSize(hitboxWidth, hitboxHeight);
@@ -35,8 +33,6 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
             if (distance <= this.flashRange) {
                 this.isFlashed = true;
                 this.fleeFrom(flashData);
-
-                // Iniciar el temporizador de aturdimiento
                 this.stunTimer = 0;
             }
         });
@@ -54,7 +50,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
                 velocity.setToPolar(angle, this.speed);
                 this.setVelocity(-velocity.x, -velocity.y);
                 this.playAnimationByVelocity(velocity);
-                return; // No seguir al jugador mientras esté aturdido
+                return; 
             }
         }
 
@@ -67,14 +63,12 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
             velocity.setToPolar(angle, this.speed);
             this.setVelocity(velocity.x, velocity.y);
 
-            // Seleccionar y reproducir la animación según la dirección
             this.playAnimationByVelocity(velocity);
         } else {
             if (!this.isMovingRandomly) {
                 this.isMovingRandomly = true;
                 this.changeRandomDirection();
             }
-            // this.enemyFollowSong.stop({loop: false});
             this.randomMoveTimer += delta;
             if (this.randomMoveTimer >= this.randomMoveDuration) {
                 this.isMovingRandomly = false;
@@ -109,7 +103,7 @@ export default class Enemy extends Phaser.Physics.Arcade.Sprite {
       this.angle = Phaser.Math.Angle.Between(0, 0, velocity.x, velocity.y);
 
         if (this.isFlashed) {
-            this.angle += Math.PI; // Agregar 180 grados para invertir la dirección
+            this.angle += Math.PI; 
         }
         const normalizedVelocity = new Phaser.Math.Vector2();
         normalizedVelocity.setToPolar(this.angle, 1);

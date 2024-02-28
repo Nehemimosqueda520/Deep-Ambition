@@ -61,8 +61,6 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
 
 
 update() {
-    // Control de movimiento horizontal
-    // Control de movimiento horizontal
 if ((this.cursor.left.isDown || this.wasd.left.isDown) && !(this.cursor.right.isDown || this.wasd.right.isDown)) {
     this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, -this.velocity, 0.2));
     this.darkness.setPosition(this.x, this.y);
@@ -75,7 +73,6 @@ if ((this.cursor.left.isDown || this.wasd.left.isDown) && !(this.cursor.right.is
     this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, 0, 0.2));
 }
 
-// Control de movimiento vertical
 if ((this.cursor.up.isDown || this.wasd.up.isDown) && !(this.cursor.down.isDown || this.wasd.down.isDown)) {
     this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, -this.velocity, 0.2));
     this.darkness.setPosition(this.x, this.y);
@@ -88,7 +85,6 @@ if ((this.cursor.up.isDown || this.wasd.up.isDown) && !(this.cursor.down.isDown 
     this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, 0, 0.2));
 }
 
-// Control de movimientos diagonales
 if ((this.cursor.left.isDown || this.wasd.left.isDown) && (this.cursor.up.isDown || this.wasd.up.isDown)) {
     this.setVelocity(-this.velocity, -this.velocity);
     this.darkness.setPosition(this.x, this.y);
@@ -107,7 +103,6 @@ if ((this.cursor.left.isDown || this.wasd.left.isDown) && (this.cursor.up.isDown
     this.play('character-down', true);
 }
 
-    // Si ninguna tecla de dirección está presionada, reproducir la animación "character-idle"
     if (!this.cursor.left.isDown && !this.cursor.right.isDown && !this.cursor.up.isDown && !this.cursor.down.isDown &&
         !this.wasd.left.isDown && !this.wasd.right.isDown && !this.wasd.up.isDown && !this.wasd.down.isDown) {
         this.play('character-idle', true);
@@ -116,7 +111,6 @@ if ((this.cursor.left.isDown || this.wasd.left.isDown) && (this.cursor.up.isDown
 
         if (this.cursor.space.isDown && this.canUseFlash) {
             this.flashSound.play();
-            // Mostrar el destello y configurar su posición
             this.flashEffect.setVisible(true);
             this.flashEffect.setPosition(this.x, this.y);
             this.flash.setVisible(true);
@@ -130,10 +124,8 @@ if ((this.cursor.left.isDown || this.wasd.left.isDown) && (this.cursor.up.isDown
             this.scene.time.delayedCall(5000, () => {
             events.emit('canUseFlashChanged', {canUseFlash: this.canUseFlash}); 
                 this.canUseFlash = true;
-               // Habilitar nuevamente el uso del destello
             });
     
-            // Establecer un temporizador para ocultar el destello después de un breve período
             this.scene.time.delayedCall(100, () => {
                 this.flashEffect.setVisible(false);
                 this.flash.setVisible(false);
