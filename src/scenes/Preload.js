@@ -121,7 +121,7 @@ export default class Preload extends Phaser.Scene {
       this.loadingText.setVisible(true); 
       getTranslations(ES_AR, () => {
         this.loadingText.setVisible(false);
-        this.dotTimer.remove(false); // Ocultar el texto "Cargando"
+        this.dotTimer.remove(false); 
         startGame();
       });
     });
@@ -131,9 +131,9 @@ export default class Preload extends Phaser.Scene {
       .setInteractive();
 
     this.portugueseButton.on("pointerdown", () => {
-      this.loadingText.setVisible(true); // Mostrar el texto "Cargando"
+      this.loadingText.setVisible(true); 
       getTranslations(PT_BR, () => {
-        this.loadingText.setVisible(false); // Ocultar el texto "Cargando"
+        this.loadingText.setVisible(false); 
         this.dotTimer.remove(false);
         startGame();
       });
@@ -145,9 +145,9 @@ export default class Preload extends Phaser.Scene {
       .setScale(0.4);
 
     this.englishButton.on("pointerdown", () => {
-      this.loadingText.setVisible(true); // Mostrar el texto "Cargando"
+      this.loadingText.setVisible(true);
       getTranslations(EN_US, () => {
-        this.loadingText.setVisible(false); // Ocultar el texto "Cargando"
+        this.loadingText.setVisible(false);
         this.dotTimer.remove(false);
         startGame();
       });
@@ -245,9 +245,7 @@ export default class Preload extends Phaser.Scene {
   
 
   updateLoadingText() {
-    this.dotCount = (this.dotCount % 3) + 1; // Alterna entre 1, 2, 3, 4
-
-    // Actualiza el texto "Cargando" con la cantidad apropiada de puntos
+    this.dotCount = (this.dotCount % 3) + 1;
     this.loadingText.text = `Loading${".".repeat(this.dotCount)}`;
   }
 }
