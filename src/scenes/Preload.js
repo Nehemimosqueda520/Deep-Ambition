@@ -2,8 +2,6 @@ import Phaser from "phaser";
 import { EN_US, ES_AR, PT_BR } from "../enums/languages";
 import { getTranslations } from "../services/translations";
 
-// import events from "./EventCenter";
-
 export default class Preload extends Phaser.Scene {
   constructor() {
     super("preload");
@@ -106,7 +104,7 @@ export default class Preload extends Phaser.Scene {
     this.dotCount = 1;
 
     this.dotTimer = this.time.addEvent({
-      delay: 500, // Cambiar los puntos cada 500 ms (ajusta según lo que desees)
+      delay: 500, 
       loop: true,
       callback: () => {
         this.updateLoadingText();
@@ -120,7 +118,7 @@ export default class Preload extends Phaser.Scene {
       .setInteractive();
 
     this.spanishButton.on("pointerdown", () => {
-      this.loadingText.setVisible(true); // Mostrar el texto "Cargando"
+      this.loadingText.setVisible(true); 
       getTranslations(ES_AR, () => {
         this.loadingText.setVisible(false);
         this.dotTimer.remove(false); // Ocultar el texto "Cargando"

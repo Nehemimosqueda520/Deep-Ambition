@@ -35,7 +35,7 @@ export default class Lobby extends Phaser.Scene {
 
     this.tweens.add({
       targets: this.fadingOverlay,
-      alpha: 0, // Cambiado a 0 para hacer desaparecer el overlay
+      alpha: 0,
       duration: 2000,
       onComplete: () => {
       },
@@ -63,7 +63,7 @@ export default class Lobby extends Phaser.Scene {
     this.Level1Door = this.physics.add
       .sprite(this.spawnPoint.x, this.spawnPoint.y, "door")
       .setImmovable()
-      .setSize(580/2, 330) // Ancho x Alto de la hitbox
+      .setSize(580/2, 330) 
       .setOffset(0, 0) 
     this.Level1Door.setFrame(3);
     this.Level1Door.setDepth(1);
@@ -145,7 +145,7 @@ export default class Lobby extends Phaser.Scene {
 
     this.tweens.add({
       targets: this.fadingOverlay,
-      alpha: 1, // Cambiado a 1 para hacer desaparecer el overlay
+      alpha: 1, 
       duration: 0,
       onComplete: () => {
         this.scene.start("game", {
@@ -167,7 +167,7 @@ export default class Lobby extends Phaser.Scene {
       this.dynamiteCuantity = 22;
       this.tweens.add({
         targets: this.fadingOverlay,
-        alpha: 1, // Cambiado a 1 para hacer desaparecer el overlay
+        alpha: 1, 
         duration: 0,
         onComplete: () => {
           this.scene.start("game", {
@@ -190,7 +190,7 @@ export default class Lobby extends Phaser.Scene {
       this.dynamiteCuantity = 22;
       this.tweens.add({
         targets: this.fadingOverlay,
-        alpha: 1, // Cambiado a 1 para hacer desaparecer el overlay
+        alpha: 1, 
         duration: 0,
         onComplete: () => {
           this.scene.start("game", {

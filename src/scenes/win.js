@@ -56,11 +56,8 @@ export default class Win extends Phaser.Scene {
           this.finalVideo = this.add.video (1980 / 2, 1080/2, "final-cinematic");
           this.winVideo.stop();
 
-          // Reproduce el video
           this.finalVideo.play ();
           this.finalVideo.setDepth(7);
-        
-          // Establece un evento para cuando el finalVideo termine
           this.finalVideo.on('start', () => {
         });
         
@@ -69,12 +66,11 @@ export default class Win extends Phaser.Scene {
         });
 
         this.input.keyboard.once('keydown-SPACE', () => {
-          // Si la tecla de espacio es presionada, ejecuta la función fadeOutCinematic
           this.scene.start("credits");
       }, this);
         }
   }
 
 }
-    
+
 

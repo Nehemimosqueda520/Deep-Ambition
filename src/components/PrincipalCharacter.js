@@ -50,64 +50,67 @@ export default class PrincipalCharacter extends Phaser.Physics.Arcade.Sprite {
         this.offsetY = this.height - this.hitboxHeight;
         this.body.setSize(this.hitboxWidth, this.hitboxHeight);
         this.body.setOffset(this.offsetX, this.offsetY);
+
+        this.wasd = {
+            up: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W),
+            down: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S),
+            left: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+            right: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+        };
 }
 
 
 update() {
     // Control de movimiento horizontal
-    if (this.cursor.left.isDown && !this.cursor.right.isDown) {
-        this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, -this.velocity, 0.2));
-        this.darkness.setPosition(this.x, this.y);
-        this.play('character-left', true);
-        // this.steps.play({ loop: true })
-    } else if (this.cursor.right.isDown && !this.cursor.left.isDown) {
-        this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, this.velocity, 0.2));
-        this.darkness.setPosition(this.x, this.y);
-        this.play('character-right', true);
-        // this.steps.play({ loop: true })
-    } else {
-        this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, 0, 0.2));
-    }
+    // Control de movimiento horizontal
+if ((this.cursor.left.isDown || this.wasd.left.isDown) && !(this.cursor.right.isDown || this.wasd.right.isDown)) {
+    this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, -this.velocity, 0.2));
+    this.darkness.setPosition(this.x, this.y);
+    this.play('character-left', true);
+} else if ((this.cursor.right.isDown || this.wasd.right.isDown) && !(this.cursor.left.isDown || this.wasd.left.isDown)) {
+    this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, this.velocity, 0.2));
+    this.darkness.setPosition(this.x, this.y);
+    this.play('character-right', true);
+} else {
+    this.setVelocityX(Phaser.Math.Linear(this.body.velocity.x, 0, 0.2));
+}
 
-    // Control de movimiento vertical
-    if (this.cursor.up.isDown && !this.cursor.down.isDown) {
-        this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, -this.velocity, 0.2));
-        this.darkness.setPosition(this.x, this.y);
-        this.play('character-up', true);
-        // this.steps.play({ loop: true })
-    } else if (this.cursor.down.isDown && !this.cursor.up.isDown) {
-        this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, this.velocity, 0.2));
-        this.darkness.setPosition(this.x, this.y);
-        this.play('character-down', true);
-        // this.steps.play({ loop: true })
-    } else {
-        this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, 0, 0.2));
-    }
+// Control de movimiento vertical
+if ((this.cursor.up.isDown || this.wasd.up.isDown) && !(this.cursor.down.isDown || this.wasd.down.isDown)) {
+    this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, -this.velocity, 0.2));
+    this.darkness.setPosition(this.x, this.y);
+    this.play('character-up', true);
+} else if ((this.cursor.down.isDown || this.wasd.down.isDown) && !(this.cursor.up.isDown || this.wasd.up.isDown)) {
+    this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, this.velocity, 0.2));
+    this.darkness.setPosition(this.x, this.y);
+    this.play('character-down', true);
+} else {
+    this.setVelocityY(Phaser.Math.Linear(this.body.velocity.y, 0, 0.2));
+}
 
-     // Control de movimientos diagonales
-    if (this.cursor.left.isDown && this.cursor.up.isDown) {
-        this.setVelocity(-this.velocity, -this.velocity);
-        this.darkness.setPosition(this.x, this.y);
-        this.play('character-up', true);
-    } else if (this.cursor.right.isDown && this.cursor.up.isDown) {
-        this.setVelocity(this.velocity, -this.velocity);
-        this.darkness.setPosition(this.x, this.y);
-        this.play('character-up', true);
-    } else if (this.cursor.left.isDown && this.cursor.down.isDown) {
-        this.setVelocity(-this.velocity, this.velocity);
-        this.darkness.setPosition(this.x, this.y);
-        this.play('character-down', true);
-    } else if (this.cursor.right.isDown && this.cursor.down.isDown) {
-        this.setVelocity(this.velocity, this.velocity);
-        this.darkness.setPosition(this.x, this.y);
-        this.play('character-down', true);
-    }
+// Control de movimientos diagonales
+if ((this.cursor.left.isDown || this.wasd.left.isDown) && (this.cursor.up.isDown || this.wasd.up.isDown)) {
+    this.setVelocity(-this.velocity, -this.velocity);
+    this.darkness.setPosition(this.x, this.y);
+    this.play('character-up', true);
+} else if ((this.cursor.right.isDown || this.wasd.right.isDown) && (this.cursor.up.isDown || this.wasd.up.isDown)) {
+    this.setVelocity(this.velocity, -this.velocity);
+    this.darkness.setPosition(this.x, this.y);
+    this.play('character-up', true);
+} else if ((this.cursor.left.isDown || this.wasd.left.isDown) && (this.cursor.down.isDown || this.wasd.down.isDown)) {
+    this.setVelocity(-this.velocity, this.velocity);
+    this.darkness.setPosition(this.x, this.y);
+    this.play('character-down', true);
+} else if ((this.cursor.right.isDown || this.wasd.right.isDown) && (this.cursor.down.isDown || this.wasd.down.isDown)) {
+    this.setVelocity(this.velocity, this.velocity);
+    this.darkness.setPosition(this.x, this.y);
+    this.play('character-down', true);
+}
 
     // Si ninguna tecla de dirección está presionada, reproducir la animación "character-idle"
-    if (!this.cursor.left.isDown && !this.cursor.right.isDown && !this.cursor.up.isDown && !this.cursor.down.isDown) {
+    if (!this.cursor.left.isDown && !this.cursor.right.isDown && !this.cursor.up.isDown && !this.cursor.down.isDown &&
+        !this.wasd.left.isDown && !this.wasd.right.isDown && !this.wasd.up.isDown && !this.wasd.down.isDown) {
         this.play('character-idle', true);
-        // this.steps.stop()
-        // this.steps.loop = false;
     }
 
 
