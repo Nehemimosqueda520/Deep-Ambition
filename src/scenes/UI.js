@@ -33,7 +33,7 @@ export default class UI extends Phaser.Scene {
         fontFamily: this.font,
         fontSize: "48px",
         color: "#fff",
-        backgroundColor: "red", // Cambia el color del fondo a rojo
+        backgroundColor: "red",
       }
     );
     this.levelText.setOrigin(0.5);
@@ -43,18 +43,17 @@ export default class UI extends Phaser.Scene {
       getPhrase("Presiona la barra espaciadora para aturdir enemigos"), {
       fontFamily: this.font,
       fontSize: "48px",
-      color: "red", // Cambia el color del fondo a rojo
+      color: "red",
     } );
     this.enemyText.setOrigin(0.5);
 
-    // Ajusta la duración durante la cual el letrero de nivel estará en pantalla
     this.tweens.add({
       targets: this.levelText && this.enemyText, 
-      alpha: 0, // Establece la opacidad del texto a 0 (totalmente transparente)
-      duration: 4000, // Duración de la animación en milisegundos
-      ease: "Linear", // Opcional: función de interpolación
+      alpha: 0, 
+      duration: 4000, 
+      ease: "Linear", 
       onComplete: () => {
-        this.levelText.destroy(); // Elimina el texto después de desvanecerse
+        this.levelText.destroy(); 
       },
     });
 
@@ -73,8 +72,7 @@ export default class UI extends Phaser.Scene {
   }
 
   updateCanUseFlash(data) {
-    console.log ("se esta transfiriendo");
-    this.canUseFlash = data.canUseFlash; // Actualiza la variable
+    this.canUseFlash = data.canUseFlash; 
     if (this.canUseFlash === true) {
       this.lantern.setTexture("lanternOff");
     } else {

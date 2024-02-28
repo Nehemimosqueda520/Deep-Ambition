@@ -14,7 +14,6 @@ export default class Lose extends Phaser.Scene {
     }
 
     create () {
-        // Fondo de la escena
         this.add.image(1920 / 2,
         1080 / 2, "game-over");
 
@@ -33,7 +32,6 @@ export default class Lose extends Phaser.Scene {
         this.pointerSound = this.sound.add("pointerOver");
         this.pointerdownSound = this.sound.add("PointerdownFX");
 
-        // Mensaje de victoria
         const winText = this.add.text(1920 / 2, 1080 * 0.25,  getPhrase('¡Has Perdido!'), {
             fontFamily: 'Time New Roman',
             fontSize: '160px',
@@ -41,7 +39,6 @@ export default class Lose extends Phaser.Scene {
         });
         winText.setOrigin(0.5);
 
-        // Mostrar la puntuación
         const scoreText = this.add.text(1920 / 2, 1080 / 2 + 50,`${getPhrase("Nivel")} ${this.level + 1}`, {
             fontFamily: 'Time New Roman',
             fontSize: '140px',
@@ -49,7 +46,6 @@ export default class Lose extends Phaser.Scene {
         });
         scoreText.setOrigin(0.5);
 
-        // Botón para reiniciar
         const restartButton = this.add.text(1920/ 2, 1080 * 0.75, getPhrase('Reiniciar'), {
             fontFamily: 'Time New Roman',
             fontSize: '140px',
@@ -73,8 +69,7 @@ export default class Lose extends Phaser.Scene {
                         health: this.health,
                     });
                 },
-              });
-            // Aquí puedes agregar lógica para reiniciar el juego, por ejemplo, regresando a la escena inicial.
+            });
         });
         restartButton.on('pointerover', () => {
             restartButton.setScale(1.5);

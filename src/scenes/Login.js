@@ -36,9 +36,8 @@ export default class Login extends Phaser.Scene {
             console.log("🚀 ~ file: Login.js:74 ~ .catch ~ error", error);
           });
       });
-
-    // agregar un texto centrado "Ingresar con Google" que al hacer clic me levante un popup js para ingresar los datos
-    this.add
+      
+      this.add
       .image(1920 *0.33, 700, "google-logo")
       .setInteractive()
       .on("pointerdown", () => {
@@ -52,7 +51,6 @@ export default class Login extends Phaser.Scene {
           });
       });
 
-    // agregar un texto "Ingresar con GitHub" que al hacer clic me levante un popup js para ingresar los datos
     this.add
       .image(1920 * (1 - 0.33), 500, "github-logo")
       .setOrigin(0.5)

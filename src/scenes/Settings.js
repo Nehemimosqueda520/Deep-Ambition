@@ -17,13 +17,11 @@ export default class Settings extends Phaser.Scene {
   }
 
   create() {
-    // Fondo para el pop-up de configuración
     this.add
       .image(1920/2, 1080/2, "image-for-languages");
       
       this.color = "#680005";
       this.fontFamily = "Times new roman";
-    // Título del pop-up de configuración
     this.add
       .text(1920 * 0.25, 1080 * 0.25, getPhrase("Configuración"), {
         fontFamily: this.fontFamily,
@@ -33,7 +31,6 @@ export default class Settings extends Phaser.Scene {
       })
       .setOrigin(0.5);
 
-    // Botón para volver al menú principal
     this.backButton = this.add
       .text(
         1920 * 0.75,
@@ -47,18 +44,15 @@ export default class Settings extends Phaser.Scene {
       )
       .setInteractive();
 
-    //  hacer que backButton cambie de tamaño si lo pasas con el raton
-
     this.backButton.on("pointerover", () => {
-      this.backButton.setScale(1.2); // Cambia el tamaño cuando el ratón está sobre él
+      this.backButton.setScale(1.2); 
     });
 
     this.backButton.on("pointerout", () => {
-      this.backButton.setScale(1); // Restaura el tamaño cuando el ratón sale
+      this.backButton.setScale(1); 
     });
 
     this.backButton.on("pointerdown", () => {
-      // Detener la escena de configuración
       this.scene.stop("settings");
       this.scene.resume("principal-menu", {
         visibleVolume: this.visibleVolume,
@@ -66,7 +60,6 @@ export default class Settings extends Phaser.Scene {
       });
     });
 
-    // Agregar etiquetas para los controles deslizantes
     this.volumeText = this.add.text(
       1920 * 0.25,
       1080 * 0.33,
@@ -78,7 +71,6 @@ export default class Settings extends Phaser.Scene {
       }
     );
 
-    // crear cursor
     this.cursor = this.input.keyboard.createCursorKeys();
   }
 
