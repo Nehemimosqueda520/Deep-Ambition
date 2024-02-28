@@ -41,7 +41,7 @@ export default class Game extends Phaser.Scene {
 
     this.tweens.add({
       targets: this.fadingOverlay,
-      alpha: 0, // Cambiado a 0 para hacer desaparecer el overlay
+      alpha: 0,
       duration: 4000,
       onComplete: () => {
         this.fadingOverlay.destroy();
@@ -123,7 +123,6 @@ export default class Game extends Phaser.Scene {
       (obj) => obj.name === "principalCharacter"
     );
 
-      // Nivel 1: Flash activado
       this.character = new PrincipalCharacter(
         this,
         this.spawnPoint.x,
@@ -238,11 +237,9 @@ export default class Game extends Phaser.Scene {
     this.arrow.setVisible(false);
     this.scene.pause();
 
-    // Obtén las coordenadas actuales de la cámara
     const cameraX = this.cameras.main.scrollX;
     const cameraY = this.cameras.main.scrollY;
 
-    // Calcula las coordenadas del video en relación con la cámara
     this.videoX = cameraX + 1980 / 2;
     this.videoY = cameraY + 1080 / 2;
 
@@ -252,7 +249,6 @@ export default class Game extends Phaser.Scene {
     this.gameSong2.stop();
     this.gameSong2.destroy();;
 
-    // Reproduce el video
     this.video.play();
     this.video.setDepth(4);
 
@@ -271,13 +267,12 @@ export default class Game extends Phaser.Scene {
 
 createArrow() {
   this.arrow = this.add.sprite(this.character.x, this.character.y, 'arrow_enemy').setDepth(9);
-  this.arrow.setOrigin(0.5, 0.5); // Centrar la flecha 
+  this.arrow.setOrigin(0.5, 0.5); 
 }
 
 
 
 updateArrow() {
-  // Encuentra el enemigo más cercano
   let closestEnemy = null;
   let closestDistance = Infinity;
   this.enemyGroup.getChildren().forEach((enemy) => {
@@ -288,10 +283,9 @@ updateArrow() {
       }
   });
 
-  // Si hay un enemigo cercano, ajusta la rotación de la flecha
   if (closestEnemy) {
     const angle = Phaser.Math.Angle.Between(this.character.x, this.character.y, closestEnemy.x, closestEnemy.y);
-    const radius = 200; // Radio de la circunferencia
+    const radius = 200; 
     const x = this.character.x + radius * Math.cos(angle);
     const y = this.character.y + radius * Math.sin(angle);
     this.arrow.setPosition(x, y);

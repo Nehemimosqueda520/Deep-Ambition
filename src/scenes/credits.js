@@ -29,15 +29,12 @@ export default class Credits extends Phaser.Scene {
             alpha: 0,
             duration: 1000,
             onComplete: () => {
-              // Después de 5 segundos, inicia el segundo tween
               this.time.delayedCall(5000, () => {
-                // Segundo tween: Desvanecimiento de salida
                 this.tweens.add({
                   targets: this.fadingOverlay,
                   alpha: 1,
                   duration: 1000,
                   onComplete: () => {
-                    // Cuando se completa el segundo tween, cambia a la escena 'principal-menu'
                     this.scene.start('principal-menu');
                   },
                 });
@@ -45,7 +42,6 @@ export default class Credits extends Phaser.Scene {
             },
           });
 
-        //  agregar texto que diga "programado por: Nehemias (DAN) Mosqueda"
         this.add.text(0, 1080 * 0.25, getPhrase('Programado por: Nehemías "DAN" Mosqueda'), {   
         fontFamily: 'Time New Roman',
         fontSize: '100px',
