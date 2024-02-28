@@ -26,6 +26,8 @@ export default class Game extends Phaser.Scene {
       level: this.level,
     });
 
+
+
     this.fadingOverlay = this.add
     .rectangle(
       0,
@@ -64,6 +66,7 @@ export default class Game extends Phaser.Scene {
     this.physics.add.collider(this.enemyGroup, this.wallCollisionLayer);
 
     this.createArrow();
+
 
     this.physics.add.overlap(
       this.character,
@@ -126,7 +129,9 @@ export default class Game extends Phaser.Scene {
         this.spawnPoint.x,
         this.spawnPoint.y,
         "principal-character",
-        this.velocity
+        this.velocity,
+        true,
+        true
       );
     this.character.setDepth(3);
     this.add.existing(this.character);
@@ -195,6 +200,7 @@ export default class Game extends Phaser.Scene {
 
       this.updateArrow();
 
+
       if (this.dynamiteCuantity <= 0) {
         this.gameSong.stop();
         this.gameSong.destroy();
@@ -225,6 +231,7 @@ export default class Game extends Phaser.Scene {
       level: this.level,
       dynamiteCuantity: this.dynamiteCuantity,
     });
+
   }
 
   damage() {
@@ -264,9 +271,10 @@ export default class Game extends Phaser.Scene {
 
 createArrow() {
   this.arrow = this.add.sprite(this.character.x, this.character.y, 'arrow_enemy').setDepth(9);
-  this.arrow.setOrigin(0.5, 0.5); // Centrar la flecha
-  this.arrow.setScale(1); // Escalar la flecha según sea necesario
+  this.arrow.setOrigin(0.5, 0.5); // Centrar la flecha 
 }
+
+
 
 updateArrow() {
   // Encuentra el enemigo más cercano
@@ -290,6 +298,7 @@ updateArrow() {
     this.arrow.rotation = angle;
 }
 }
+
 
   saveGameData() {
     this.firebase.saveGameData(this.user.uid, {

@@ -51,7 +51,7 @@ export default class Win extends Phaser.Scene {
       .setDepth(4);
 
         this.levelsPased += 1;
-        if (this.levelsPased >= 3) {
+        if (this.levelsPased === 3) {
           
           this.finalVideo = this.add.video (1980 / 2, 1080/2, "final-cinematic");
           this.winVideo.stop();
